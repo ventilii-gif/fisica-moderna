@@ -254,6 +254,12 @@ th { color: var(--muted); font-weight: 700; font-size: .76rem; text-transform: u
   border-radius: 999px; padding: 6px 12px;
 }
 .subnav button:hover { border-color: var(--q); color: var(--q); }
+/* scorciatoia al quiz della sezione, evidenziata */
+.subnav button.q {
+  background: var(--q-soft); border-color: var(--q); color: var(--q-ink); font-weight: 700;
+}
+.subnav button.q:hover { background: var(--q); border-color: var(--q); color: #fff; }
+html[data-theme="dark"] .subnav button.q:hover { color: #16121f; }
 
 /* ---------- simulazioni ---------- */
 .simwrap { margin: 18px 0 6px; }
@@ -829,6 +835,8 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     <p>Tre esperimenti che nella realtà richiedono un laboratorio, resi manipolabili. L'obiettivo non è guardarli: è cercare di <em>rompere</em> le previsioni. Prova a estrarre elettroni con luce rossa intensissima; prova a far comparire le frange chiudendo una fenditura; prova a far emettere un fotone rosso a una transizione della serie di Lyman. Il fatto che non riesca è l'informazione che stai cercando.</p>
   </div>
 
+  <div class="subnav" id="toc-sim"></div>
+
   <h2 id="s1">A. Effetto fotoelettrico</h2>
 
   <p>I pacchetti d'onda a sinistra sono i fotoni: il loro <b>colore</b> e la loro <b>frequenza spaziale</b> dipendono dalla lunghezza d'onda scelta, il loro <b>numero</b> dall'intensità. Ogni pacchetto che raggiunge la superficie viene assorbito da un singolo elettrone. Se \(hf \ge W\) l'elettrone esce e viaggia verso il collettore con energia cinetica \(K_{max} = hf - W\); se \(hf &lt; W\) l'energia viene solo dissipata e non esce nulla, per quanti pacchetti si mandino.</p>
@@ -1002,7 +1010,9 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     <p>Scrivi il risultato in <b>notazione decimale</b> (0,0529) o <b>scientifica</b> (5,29e-2 oppure 5.29e-2). La virgola e il punto sono equivalenti. La tolleranza accettata è di circa il 2%, quindi non serve trascinare tutte le cifre: arrotonda a tre cifre significative.</p>
   </div>
 
-  <div class="panel">
+  <div class="subnav" id="toc-eserc"></div>
+
+  <div class="panel" id="e-form">
     <h3 style="margin-top:0">Formulario di riferimento</h3>
     <div class="grid2">
       <div>
@@ -1026,7 +1036,7 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     </div>
   </div>
 
-  <h2 style="margin-top:28px">Problemi</h2>
+  <h2 id="e-prob" style="margin-top:28px">Problemi</h2>
   <div id="exlist"></div>
 
   <div class="panel" id="exsummary" style="text-align:center">
@@ -1048,7 +1058,12 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
 
   <div class="panel">
     <h3 style="margin-top:0">Quiz per sezione</h3>
-    <p style="margin-bottom:0">Ogni sezione ha il proprio quiz a riscontro immediato, sui soli argomenti di quella sezione: lo trovi al termine della <a href="#" data-goto="teoria">sezione 1 (Teoria)</a>, della <a href="#" data-goto="sim">sezione 2 (Simulazioni)</a> e della <a href="#" data-goto="eserc">sezione 3 (Esercizi)</a>. Conviene affrontarli prima di questa verifica finale.</p>
+    <p>Ogni sezione ha il proprio quiz a riscontro immediato, con dieci domande di teoria e cinque problemi sui soli argomenti di quella sezione. Conviene affrontarli prima di questa verifica finale: i link qui sotto portano direttamente al quiz, senza passare per il contenuto della sezione.</p>
+    <div class="subnav" style="margin-bottom:0">
+      <button type="button" class="q" data-goto="teoria" data-quiz="quiz-teoria">Quiz sezione 1 &middot; Teoria &rarr;</button>
+      <button type="button" class="q" data-goto="sim" data-quiz="quiz-sim">Quiz sezione 2 &middot; Simulazioni &rarr;</button>
+      <button type="button" class="q" data-goto="eserc" data-quiz="quiz-eserc">Quiz sezione 3 &middot; Esercizi &rarr;</button>
+    </div>
   </div>
 </section>
 
@@ -1229,9 +1244,21 @@ function showSection(name, scroll) {
 SECTIONS.forEach(s => {
   $("#tab-" + s).addEventListener("click", () => showSection(s));
 });
+/* scorrimento a un elemento per id */
+function scrollToId(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 14, behavior: "smooth" });
+}
+
+/* link fra sezioni; con data-quiz porta direttamente al quiz di quella sezione */
 document.addEventListener("click", e => {
   const a = e.target.closest("[data-goto]");
-  if (a) { e.preventDefault(); showSection(a.getAttribute("data-goto")); }
+  if (!a) return;
+  e.preventDefault();
+  const q = a.getAttribute("data-quiz");
+  showSection(a.getAttribute("data-goto"), !q);
+  if (q) requestAnimationFrame(() => scrollToId(q));
 });
 
 /* pulsante torna su */
@@ -1241,19 +1268,31 @@ window.addEventListener("scroll", () => {
 }, { passive: true });
 toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 
-/* indice della teoria */
-const TOC = [
-  ["t1", "1. Crisi della fisica classica"], ["t2", "2. Effetto fotoelettrico"],
-  ["t3", "3. Effetto Compton"], ["t4", "4. Dualismo onda-particella"],
-  ["t5", "5. Modelli atomici"], ["t6", "6. Indeterminazione"],
-  ["t7", "7. Funzione d'onda"]
+/* indici interni alle sezioni: voci dell'argomento + scorciatoia al quiz */
+const SUBNAV = [
+  { host: "toc", quiz: "quiz-teoria", items: [
+    ["t1", "1. Crisi della fisica classica"], ["t2", "2. Effetto fotoelettrico"],
+    ["t3", "3. Effetto Compton"], ["t4", "4. Dualismo onda-particella"],
+    ["t5", "5. Modelli atomici"], ["t6", "6. Indeterminazione"],
+    ["t7", "7. Funzione d'onda"]
+  ]},
+  { host: "toc-sim", quiz: "quiz-sim", items: [
+    ["s1", "A. Effetto fotoelettrico"], ["s2", "B. Doppia fenditura"], ["s3", "C. Modello di Bohr"]
+  ]},
+  { host: "toc-eserc", quiz: "quiz-eserc", items: [
+    ["e-form", "Formulario"], ["e-prob", "I 12 problemi"]
+  ]}
 ];
-$("#toc").innerHTML = TOC.map(t => '<button type="button" data-jump="' + t[0] + '">' + t[1] + "</button>").join("");
-$("#toc").addEventListener("click", e => {
-  const b = e.target.closest("[data-jump]");
-  if (!b) return;
-  const el = document.getElementById(b.getAttribute("data-jump"));
-  if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 14, behavior: "smooth" });
+SUBNAV.forEach(cfg => {
+  const host = document.getElementById(cfg.host);
+  if (!host) return;
+  host.innerHTML =
+    cfg.items.map(t => '<button type="button" data-jump="' + t[0] + '">' + t[1] + "</button>").join("") +
+    '<button type="button" class="q" data-jump="' + cfg.quiz + '">Quiz di sezione &rarr;</button>';
+});
+document.addEventListener("click", e => {
+  const b = e.target.closest(".subnav [data-jump]");
+  if (b) scrollToId(b.getAttribute("data-jump"));
 });
 
 /* ============================================================
