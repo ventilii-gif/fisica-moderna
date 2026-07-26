@@ -170,9 +170,59 @@ h1 { font-size: clamp(1.5rem, 4.4vw, 2.1rem); line-height: 1.18; margin: 0 0 6px
 /* ---------- navigazione a sezioni (statica, robusta) ---------- */
 .nav {
   max-width: 1080px; margin: 18px auto 0; padding: 0 18px;
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(158px, 1fr)); gap: 9px;
 }
 @media (max-width: 720px) { .nav { grid-template-columns: repeat(2, 1fr); } }
+.navbtn .mn {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--muted);
+}
+.navbtn[aria-selected="true"] .mn { color: var(--q); }
+
+/* ---- intestazione del modulo ---- */
+.modhead { padding: 4px 0 2px; }
+.modnum {
+  font-family: var(--ui); font-size: .72rem; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--q); font-weight: 700; margin: 0 0 3px;
+}
+.modtitle { font-size: clamp(1.35rem, 3.6vw, 1.85rem); line-height: 1.2; margin: 0 0 5px; letter-spacing: -.01em; }
+.modsub { margin: 0; color: var(--muted); font-size: .95rem; max-width: 62ch; }
+
+/* ---- schede interne al modulo ---- */
+.subtabs {
+  display: flex; flex-wrap: wrap; gap: 7px;
+  margin: 16px 0 20px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.subtabs button {
+  font-family: var(--ui); font-size: .86rem; font-weight: 600; cursor: pointer;
+  background: var(--panel); color: var(--ink2);
+  border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px;
+  display: inline-flex; align-items: center; gap: 7px;
+}
+.subtabs button:hover { border-color: var(--q); color: var(--q); }
+.subtabs button[aria-selected="true"] {
+  background: var(--q); border-color: var(--q); color: #fff;
+  box-shadow: var(--shadow);
+}
+html[data-theme="dark"] .subtabs button[aria-selected="true"] { color: #16121f; }
+.subtabs button .cnt {
+  font-family: var(--mono); font-size: .72rem; opacity: .75;
+}
+@media (max-width: 560px) {
+  .subtabs button { font-size: .8rem; padding: 7px 12px; flex: 1 1 auto; justify-content: center; }
+}
+/* elenco numerato di passaggi, per le derivazioni */
+.steps {
+  background: var(--panel2); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px 18px 10px; margin: 0 0 16px;
+}
+.steps ol { margin: 0; padding-left: 20px; }
+.steps li { margin-bottom: 9px; }
+.steps li:last-child { margin-bottom: 0; }
+
+.pane[hidden] { display: none !important; }
+.pane > h2:first-child, .pane > p:first-child { margin-top: 0; }
 .navbtn {
   font-family: var(--ui); text-align: left; cursor: pointer;
   background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
@@ -416,7 +466,7 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     <div class="brand">
       <p class="kicker">Fisica moderna &middot; quinto anno</p>
       <h1>Introduzione alla fisica quantistica</h1>
-      <p class="sub">Dal corpo nero alla funzione d'onda: teoria, simulazioni interattive, esercizi guidati e verifiche. L'intuizione classica qui non basta — e questo fa parte del percorso.</p>
+      <p class="sub">Sei moduli, ciascuno con la propria teoria, la propria simulazione interattiva, i propri esercizi guidati e il proprio quiz. Dal corpo nero alla funzione d'onda: l'intuizione classica qui non basta, e questo fa parte del percorso.</p>
     </div>
     <button class="tbtn" id="themeBtn" type="button" aria-live="polite">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" id="themeIcon">
@@ -427,33 +477,26 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     </button>
   </div>
 
-  <nav class="nav" role="tablist" aria-label="Sezioni">
-    <button class="navbtn" role="tab" id="tab-teoria" aria-controls="sec-teoria" aria-selected="true" type="button">
-      <b>1 &middot; Teoria</b><span>Corpo nero, fotoni, atomi, indeterminazione</span>
-    </button>
-    <button class="navbtn" role="tab" id="tab-sim" aria-controls="sec-sim" aria-selected="false" type="button">
-      <b>2 &middot; Simulazioni</b><span>Fotoelettrico, doppia fenditura, livelli di Bohr</span>
-    </button>
-    <button class="navbtn" role="tab" id="tab-eserc" aria-controls="sec-eserc" aria-selected="false" type="button">
-      <b>3 &middot; Esercizi</b><span>12 problemi con aiuti progressivi</span>
-    </button>
-    <button class="navbtn" role="tab" id="tab-quiz" aria-controls="sec-quiz" aria-selected="false" type="button">
-      <b>4 &middot; Verifica finale</b><span>10 domande + 5 problemi, punteggio finale</span>
-    </button>
-  </nav>
+  <nav class="nav" role="tablist" id="modnav" aria-label="Moduli del percorso"></nav>
 </header>
 
 <main class="wrap">
 
-<section id="sec-teoria" role="tabpanel" aria-labelledby="tab-teoria">
+<section class="module" id="mod-1" role="tabpanel" aria-labelledby="tab-mod-1">
+  <div class="modhead">
+    <p class="modnum">Modulo 1 di 6</p>
+    <h1 class="modtitle">Corpo nero e ipotesi di Planck</h1>
+    <p class="modsub">Dove la fisica classica produce un infinito, e il primo quanto della storia.</p>
+  </div>
 
+  <div class="subtabs" role="tablist" data-mod="1" aria-label="Contenuti del modulo 1"></div>
+
+  <div class="pane" data-mod="1" data-pane="teoria">
   <div class="callout">
     <span class="lab">Come leggere questa sezione</span>
     <p>Stiamo entrando in una scala — quella atomica — dove le regole cambiano. Molte affermazioni che seguono sembreranno sbagliate alla prima lettura: non perché siano spiegate male, ma perché l'intuizione che abbiamo costruito su oggetti grandi (palle, onde sull'acqua, pianeti) non si estende fino qui. Il disagio che senti è la reazione corretta, ed è la stessa che hanno provato i fisici tra il 1900 e il 1927. Il metodo per superarlo non è "immaginarlo meglio": è seguire gli esperimenti, e accettare che la descrizione giusta sia quella che li riproduce.</p>
+    <p style="margin-bottom:0">Il percorso è diviso in <b>sei moduli</b>, che si scelgono dalla barra in alto. Dentro ogni modulo le quattro schede vanno lette nell'ordine: la <b>teoria</b> introduce il fenomeno, la <b>simulazione</b> ti fa manovrare le grandezze in gioco, gli <b>esercizi</b> ti fanno usare le formule con aiuti progressivi, il <b>quiz</b> verifica la comprensione con riscontro immediato. Alla fine c'è una verifica di riepilogo su tutto il programma.</p>
   </div>
-
-  <div class="subnav" id="toc"></div>
-
   <h2 id="t1">1. La crisi della fisica classica</h2>
 
   <p>Alla fine dell'Ottocento la fisica classica appare quasi conclusa: la meccanica di Newton descrive il moto, l'elettromagnetismo di Maxwell descrive luce, campi e onde, la termodinamica descrive il calore. Restano però alcuni fenomeni "residui" che nessuna di queste teorie riesce a spiegare. Non si tratta di dettagli tecnici: sono punti in cui la teoria classica non dà un risultato leggermente sbagliato, ma un risultato <em>assurdo</em>.</p>
@@ -512,7 +555,86 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
   </div>
 
   <p>Nota l'ordine di grandezza di \(h\): \(10^{-34}\) in unità SI. Per un'oscillazione macroscopica la granularità dei pacchetti è così fine che nessuno strumento può notarla, e la fisica classica torna a essere un'eccellente approssimazione. La quantizzazione non è "un'altra fisica": è la fisica che c'è sempre stata, ma i cui effetti diventano visibili solo quando \(hf\) è confrontabile con le energie in gioco.</p>
+  </div>
 
+  <div class="pane" data-mod="1" data-pane="sim" hidden>
+
+  <p>La curva mostra quanta energia il corpo nero emette a ciascuna lunghezza d'onda. Muovi la temperatura e osserva due cose insieme: il massimo che si sposta verso il blu (legge di Wien) e l'area totale che cresce molto più rapidamente (legge di Stefan-Boltzmann). La curva tratteggiata è la previsione classica di Rayleigh-Jeans: coincide con quella corretta alle grandi lunghezze d'onda e diverge nell'ultravioletto.</p>
+
+  <div class="panel simwrap">
+    <div class="canvasbox"><canvas id="cv-planck" height="350" data-h-narrow="300" aria-label="Spettro del corpo nero al variare della temperatura"></canvas></div>
+
+    <div class="ctrls">
+      <div class="ctrl">
+        <label for="pl-T">Temperatura <b><span id="pl-T-v">5000</span> K</b></label>
+        <input type="range" id="pl-T" min="800" max="9000" step="50" value="5000">
+      </div>
+      <div class="ctrl">
+        <label for="pl-scale">Scala verticale <b><span id="pl-scale-v">automatica</span></b></label>
+        <select id="pl-scale">
+          <option value="auto">automatica: ogni curva a piena altezza</option>
+          <option value="fix">fissa: confronta le intensità</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button class="ghost" id="pl-rj" type="button" aria-pressed="true">Curva classica: on</button>
+      <button class="ghost" id="pl-keep" type="button">Fissa questa curva</button>
+      <button class="ghost" id="pl-clear" type="button">Azzera curve fissate</button>
+      <button class="ghost" id="pl-sun" type="button">Sole (5778 K)</button>
+      <button class="ghost" id="pl-body" type="button">Corpo umano (310 K)</button>
+    </div>
+
+    <div class="kv">
+      <div><span>\(\lambda_{max}\) (Wien)</span><strong id="pl-lmax" class="hl">&mdash;</strong></div>
+      <div><span>Regione dello spettro</span><strong id="pl-band">&mdash;</strong></div>
+      <div><span>Colore a \(\lambda_{max}\)</span><strong id="pl-col">&mdash;</strong></div>
+      <div><span>\(I = \sigma T^4\)</span><strong id="pl-pow">&mdash;</strong></div>
+      <div><span>Quanto a \(\lambda_{max}\)</span><strong id="pl-quanto">&mdash;</strong></div>
+      <div><span>\(hf/kT\) a 200 nm</span><strong id="pl-ratio">&mdash;</strong></div>
+    </div>
+
+    <div class="status" id="pl-status">&mdash;</div>
+
+    <div class="callout teal" style="margin-bottom:0">
+      <span class="lab">Che cosa osservare</span>
+      <ul style="margin-bottom:0">
+        <li>Con <b>scala fissa</b> porta la temperatura da 3000 a 6000 K: l'altezza non raddoppia, cresce di circa sedici volte. È il \(T^4\) di Stefan-Boltzmann.</li>
+        <li>Guarda dove cade il massimo rispetto alla banda visibile: sotto i 1000 K il corpo emette quasi solo infrarosso, ed è per questo che un ferro tiepido non si vede al buio.</li>
+        <li>Il rapporto \(hf/kT\) a 200 nm dice quanto è "caro" un quanto ultravioletto rispetto all'energia termica disponibile: quando è molto maggiore di 1, quel modo resta spento. È il meccanismo che spegne la catastrofe.</li>
+        <li>Attiva la curva classica e osserva che a destra le due curve si sovrappongono: la fisica classica non era sbagliata, era incompleta.</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="pane" data-mod="1" data-pane="eserc" hidden>
+    <div class="panel">
+      <h3 style="margin-top:0">Formule di questo modulo</h3>
+      \[ \lambda_{max}T = 2{,}90\cdot10^{-3}\ \mathrm{m\,K} \qquad I = \sigma T^4 \]\[ E_n = n\,hf \qquad h = 6{,}626\cdot10^{-34}\ \mathrm{J\,s} \]
+    </div>
+    <div class="exlist" data-mod="1"></div>
+    <div class="panel" style="text-align:center">
+      <p style="margin:0"><b>Risolti correttamente: <span class="ex-count" data-mod="1">0</span> / <span class="ex-tot" data-mod="1">0</span></b></p>
+    </div>
+  </div>
+
+  <div class="pane" data-mod="1" data-pane="quiz" hidden>
+    <div id="quiz-m1"></div>
+  </div>
+</section>
+
+<section class="module" id="mod-2" role="tabpanel" aria-labelledby="tab-mod-2" hidden>
+  <div class="modhead">
+    <p class="modnum">Modulo 2 di 6</p>
+    <h1 class="modtitle">Effetto fotoelettrico</h1>
+    <p class="modsub">La luce cede energia a pacchetti indivisibili: soglia, istantaneità, linearità.</p>
+  </div>
+
+  <div class="subtabs" role="tablist" data-mod="2" aria-label="Contenuti del modulo 2"></div>
+
+  <div class="pane" data-mod="2" data-pane="teoria">
   <h2 id="t2">2. L'effetto fotoelettrico</h2>
 
   <p>Se si illumina una superficie metallica pulita, in certe condizioni il metallo emette elettroni (detti <b>fotoelettroni</b>). Il fenomeno, scoperto da Hertz nel 1887 e studiato in dettaglio da Lenard, si misura con una cella fotoelettrica: due elettrodi in un tubo a vuoto, la luce colpisce il catodo, e un amperometro misura la corrente degli elettroni raccolti dall'anodo.</p>
@@ -605,10 +727,112 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     <p>Chiamare il fotone "particella di luce" è comodo ma pericoloso. Un fotone non è una biglia minuscola con un raggio, una traiettoria e una posizione definita in ogni istante. È un <b>quanto del campo elettromagnetico</b>: la quantità minima e indivisibile di energia che il campo può scambiare a quella frequenza. Ha energia \(hf\), quantità di moto \(p = hf/c = h/\lambda\), massa nulla, e viaggia sempre a \(c\).</p>
     <p>L'immagine meno sbagliata è quella di un <b>pacchetto</b>: un'onda concentrata, che si comporta come un'entità unica quando viene assorbita o emessa. È l'immagine usata nella simulazione dell'effetto fotoelettrico: i pacchetti d'onda arrivano sulla superficie, e ciascuno vive o muore in un unico evento.</p>
   </div>
+  </div>
 
+  <div class="pane" data-mod="2" data-pane="sim" hidden>
+
+  <p>I pacchetti d'onda a sinistra sono i fotoni: il loro <b>colore</b> e la loro <b>frequenza spaziale</b> dipendono dalla lunghezza d'onda scelta, il loro <b>numero</b> dall'intensità. Ogni pacchetto che raggiunge la superficie viene assorbito da un singolo elettrone. Se \(hf \ge W\) l'elettrone esce e viaggia verso il collettore con energia cinetica \(K_{max} = hf - W\); se \(hf &lt; W\) l'energia viene solo dissipata e non esce nulla, per quanti pacchetti si mandino.</p>
+
+  <div class="panel simwrap">
+    <div class="canvasbox"><canvas id="cv-pe" height="330" aria-label="Simulazione dell'effetto fotoelettrico"></canvas></div>
+
+    <div class="ctrls">
+      <div class="ctrl">
+        <label for="pe-lam">Lunghezza d'onda <b><span id="pe-lam-v">450</span> nm</b></label>
+        <input type="range" id="pe-lam" min="180" max="750" step="5" value="450">
+      </div>
+      <div class="ctrl">
+        <label for="pe-int">Intensit&agrave; luminosa <b><span id="pe-int-v">50</span>%</b></label>
+        <input type="range" id="pe-int" min="5" max="100" step="5" value="50">
+      </div>
+      <div class="ctrl">
+        <label for="pe-mat">Materiale del catodo <b><span id="pe-mat-v">Sodio</span></b></label>
+        <select id="pe-mat"></select>
+      </div>
+      <div class="ctrl">
+        <label for="pe-vstop">Tensione frenante <b><span id="pe-vstop-v">0,0</span> V</b></label>
+        <input type="range" id="pe-vstop" min="0" max="60" step="1" value="0">
+      </div>
+    </div>
+
+    <div class="status" id="pe-status">&mdash;</div>
+
+    <div class="kv">
+      <div><span>Frequenza \(f\)</span><strong id="pe-f">&mdash;</strong></div>
+      <div><span>Energia fotone \(hf\)</span><strong id="pe-E" class="hl">&mdash;</strong></div>
+      <div><span>Lavoro estrazione \(W\)</span><strong id="pe-W">&mdash;</strong></div>
+      <div><span>\(K_{max} = hf - W\)</span><strong id="pe-K">&mdash;</strong></div>
+      <div><span>Soglia \(f_0\)</span><strong id="pe-f0">&mdash;</strong></div>
+      <div><span>Soglia \(\lambda_0\)</span><strong id="pe-l0">&mdash;</strong></div>
+      <div><span>Potenziale d'arresto</span><strong id="pe-va">&mdash;</strong></div>
+      <div><span>Corrente rilevata</span><strong id="pe-cur">&mdash;</strong></div>
+    </div>
+
+    <div class="btnrow">
+      <button class="ghost" id="pe-pause" type="button" aria-pressed="false">Pausa</button>
+      <button class="ghost" id="pe-preset1" type="button">Prova: rosso intensissimo</button>
+      <button class="ghost" id="pe-preset2" type="button">Prova: UV debolissimo</button>
+    </div>
+
+    <div class="grid2" style="margin-top:16px">
+      <div>
+        <h4>Grafico \(K_{max}(f)\)</h4>
+        <div class="canvasbox"><canvas id="cv-pek" height="210" aria-label="Grafico dell'energia cinetica massima in funzione della frequenza"></canvas></div>
+      </div>
+      <div>
+        <h4>Che cosa osservare</h4>
+        <ul style="font-size:.93rem">
+          <li>Muovi <b>solo l'intensità</b>: la corrente cambia, \(K_{max}\) resta fissa. Gli elettroni escono più numerosi, non più veloci.</li>
+          <li>Muovi <b>solo la lunghezza d'onda</b> verso il basso (frequenza in alto): \(K_{max}\) cresce linearmente e gli elettroni si vedono partire più rapidi.</li>
+          <li>Attraversa \(\lambda_0\): l'emissione si spegne <b>di colpo</b>, non gradualmente. Sotto soglia, l'intensità al 100% non serve a nulla.</li>
+          <li>Cambia materiale: il punto rappresentativo salta su un'altra retta <b>parallela</b>. La pendenza è \(h\) e non dipende dal metallo.</li>
+          <li>Alza la <b>tensione frenante</b> fino ad annullare la corrente: quel valore è il potenziale d'arresto, e misura \(K_{max}\) in elettronvolt.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="pane" data-mod="2" data-pane="eserc" hidden>
+    <div class="panel">
+      <h3 style="margin-top:0">Formule di questo modulo</h3>
+      \[ E = hf = \frac{hc}{\lambda} \qquad E[\mathrm{eV}] = \frac{1240}{\lambda[\mathrm{nm}]} \]\[ K_{max} = hf - W \qquad f_0 = \frac{W}{h} \qquad eV_a = K_{max} \]
+    </div>
+    <div class="exlist" data-mod="2"></div>
+    <div class="panel" style="text-align:center">
+      <p style="margin:0"><b>Risolti correttamente: <span class="ex-count" data-mod="2">0</span> / <span class="ex-tot" data-mod="2">0</span></b></p>
+    </div>
+  </div>
+
+  <div class="pane" data-mod="2" data-pane="quiz" hidden>
+    <div id="quiz-m2"></div>
+  </div>
+</section>
+
+<section class="module" id="mod-3" role="tabpanel" aria-labelledby="tab-mod-3" hidden>
+  <div class="modhead">
+    <p class="modnum">Modulo 3 di 6</p>
+    <h1 class="modtitle">Effetto Compton</h1>
+    <p class="modsub">Il fotone urta un elettrone e rincula: la quantità di moto della luce, misurata.</p>
+  </div>
+
+  <div class="subtabs" role="tablist" data-mod="3" aria-label="Contenuti del modulo 3"></div>
+
+  <div class="pane" data-mod="3" data-pane="teoria">
   <h2 id="t3">3. L'effetto Compton</h2>
 
   <p>L'effetto fotoelettrico mostra che la luce cede energia a pacchetti. L'effetto Compton (1923) mostra qualcosa di più forte: nell'interazione con un elettrone il fotone si comporta a tutti gli effetti come una particella dotata di <b>quantità di moto</b>, e l'urto obbedisce alle stesse leggi di conservazione di un urto tra due biglie.</p>
+
+  <h3>L'esperimento</h3>
+
+  <p>L'apparato è concettualmente semplice. Una sorgente produce raggi X monocromatici (Compton usa la riga \(K_\alpha\) del molibdeno, \(\lambda = 71{,}1\) pm); il fascio colpisce un blocchetto di grafite; un rivelatore mobile, montato su un braccio rotante, raccoglie la radiazione diffusa a un angolo \(\theta\) scelto dallo sperimentatore. Per ciascun angolo uno spettrometro a cristallo misura la lunghezza d'onda della radiazione raccolta.</p>
+
+  <p>Il risultato è che a ogni angolo lo spettro diffuso contiene <b>due picchi</b>: uno alla lunghezza d'onda incidente \(\lambda\), uno spostato a \(\lambda' > \lambda\). Il secondo picco è la novità, e la sua posizione cambia con l'angolo in modo perfettamente riproducibile.</p>
+
+  <div class="callout">
+    <span class="lab">Perché due picchi e non uno</span>
+    <p>Il picco non spostato viene dalla diffusione sugli elettroni <em>fortemente legati</em>: in quel caso il fotone urta di fatto l'intero atomo, la cui massa è migliaia di volte maggiore, e nella formula \(h/(mc)\) va usata la massa dell'atomo anziché quella dell'elettrone. Lo spostamento diventa allora così piccolo da risultare inosservabile. Il picco spostato viene invece dagli elettroni <em>esterni</em>, debolmente legati, che si comportano come praticamente liberi. La formula di Compton descrive questi ultimi, ed è per questo che contiene \(m_e\).</p>
+  </div>
 
   <p>Compton invia raggi X di lunghezza d'onda \(\lambda\) nota su un bersaglio di grafite e misura la radiazione diffusa a vari angoli. Trova che parte della radiazione diffusa ha lunghezza d'onda <b>maggiore</b> di quella incidente, e che l'aumento dipende solo dall'angolo di diffusione \(\theta\):</p>
   \[ \Delta\lambda = \lambda' - \lambda = \frac{h}{m_e c}\,\bigl(1 - \cos\theta\bigr) \]
@@ -626,11 +850,121 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     <li>\(\Delta\lambda\) è una quantità <em>assoluta</em> di pochi picometri: per questo l'effetto è ben visibile con raggi X (\(\lambda \sim 10\) pm, spostamento relativo grande) e del tutto trascurabile con luce visibile (\(\lambda \sim 500\) nm, cioè 500 000 pm).</li>
   </ul>
 
+  <h3>Come si ricava la formula</h3>
+
+  <p>Il conto non richiede nulla di più delle conservazioni, purché si usino le espressioni relativistiche. Si scrivono le tre equazioni per un fotone che arriva lungo \(x\) su un elettrone in quiete:</p>
+
+  <div class="steps">
+    <ol>
+      <li><b>Conservazione dell'energia.</b> \(\dfrac{hc}{\lambda} + m_ec^2 = \dfrac{hc}{\lambda'} + E_e\), dove \(E_e = \sqrt{(p_ec)^2 + (m_ec^2)^2}\) è l'energia totale dell'elettrone dopo l'urto.</li>
+      <li><b>Quantità di moto lungo \(x\).</b> \(\dfrac{h}{\lambda} = \dfrac{h}{\lambda'}\cos\theta + p_e\cos\varphi\).</li>
+      <li><b>Quantità di moto lungo \(y\).</b> \(0 = -\dfrac{h}{\lambda'}\sin\theta + p_e\sin\varphi\), che è la ragione per cui l'elettrone rincula sempre dalla parte opposta al fotone diffuso.</li>
+    </ol>
+  </div>
+
+  <p>Eliminando fra queste le due incognite che non interessano — il modulo \(p_e\) e l'angolo \(\varphi\) dell'elettrone — resta una sola relazione fra \(\lambda\), \(\lambda'\) e \(\theta\), ed è precisamente la formula di Compton. Il fatto notevole è che il risultato non contiene \(\lambda\): lo spostamento è lo stesso per qualunque radiazione incidente.</p>
+
+  <p>Dalle stesse equazioni si ricava anche l'angolo dell'elettrone,</p>
+  \[ \cot\varphi = \left(1 + \frac{E}{m_ec^2}\right)\tan\frac{\theta}{2} \]
+
+  <p>che è sempre acuto: l'elettrone parte necessariamente in avanti, perché la quantità di moto iniziale puntava tutta in avanti. Nella simulazione di questo modulo puoi verificarlo angolo per angolo.</p>
+
+  <h3>Fotoelettrico e Compton: due prove diverse</h3>
+
+  <table>
+    <thead><tr><th>&nbsp;</th><th>Effetto fotoelettrico</th><th>Effetto Compton</th></tr></thead>
+    <tbody>
+      <tr><td><b>Cosa si misura</b></td><td>energia cinetica massima degli elettroni estratti</td><td>lunghezza d'onda della radiazione diffusa a un dato angolo</td></tr>
+      <tr><td><b>Grandezza del fotone in gioco</b></td><td>energia \(E = hf\)</td><td>energia \(E = hf\) <em>e</em> quantità di moto \(p = h/\lambda\)</td></tr>
+      <tr><td><b>Il fotone</b></td><td>viene assorbito e scompare</td><td>sopravvive, con energia minore</td></tr>
+      <tr><td><b>Scappatoia classica</b></td><td>si può ancora ipotizzare che sia il metallo ad assorbire per quanti</td><td>nessuna: è cinematica di un urto fra due corpi</td></tr>
+      <tr><td><b>Regione dello spettro</b></td><td>visibile e ultravioletto</td><td>raggi X e raggi gamma</td></tr>
+    </tbody>
+  </table>
+
   <div class="callout amber">
     <span class="lab">Perché Compton conta</span>
     <p>Nell'effetto fotoelettrico si potrebbe ancora sospettare che la discretizzazione riguardi il metallo e non la luce. Nell'effetto Compton no: si misura la cinematica di un urto, e i conti tornano solo attribuendo al fotone una quantità di moto \(h/\lambda\). È la prova che la natura corpuscolare appartiene alla radiazione stessa.</p>
   </div>
+  </div>
 
+  <div class="pane" data-mod="3" data-pane="sim" hidden>
+
+  <p>Un fotone di raggi X arriva su un elettrone in quiete. Scegli la lunghezza d'onda incidente e l'angolo di diffusione: la simulazione calcola il fotone diffuso e il rinculo dell'elettrone imponendo la conservazione di energia e quantità di moto, esattamente come in un urto tra due corpi.</p>
+
+  <div class="panel simwrap">
+    <div class="canvasbox"><canvas id="cv-compton" height="360" data-h-narrow="330" aria-label="Urto Compton fra fotone ed elettrone"></canvas></div>
+
+    <div class="ctrls">
+      <div class="ctrl">
+        <label for="co-lam">\(\lambda\) incidente <b><span id="co-lam-v">10</span> pm</b></label>
+        <input type="range" id="co-lam" min="2" max="60" step="1" value="10">
+      </div>
+      <div class="ctrl">
+        <label for="co-th">Angolo di diffusione \(\theta\) <b><span id="co-th-v">90</span>°</b></label>
+        <input type="range" id="co-th" min="0" max="180" step="1" value="90">
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button class="act" id="co-run" type="button">Ripeti l'urto</button>
+      <button class="ghost" id="co-vec" type="button" aria-pressed="true">Vettori quantità di moto</button>
+      <button class="ghost" id="co-90" type="button">&theta; = 90°</button>
+      <button class="ghost" id="co-180" type="button">Retrodiffusione</button>
+      <button class="ghost" id="co-vis" type="button">Prova con luce visibile</button>
+    </div>
+
+    <div class="kv">
+      <div><span>\(\Delta\lambda\)</span><strong id="co-dl" class="hl">&mdash;</strong></div>
+      <div><span>\(\lambda'\) diffusa</span><strong id="co-lam2">&mdash;</strong></div>
+      <div><span>\(E\) incidente</span><strong id="co-E">&mdash;</strong></div>
+      <div><span>\(E'\) diffusa</span><strong id="co-E2">&mdash;</strong></div>
+      <div><span>Energia all'elettrone</span><strong id="co-Ke">&mdash;</strong></div>
+      <div><span>Frazione ceduta</span><strong id="co-frac">&mdash;</strong></div>
+      <div><span>Angolo elettrone \(\varphi\)</span><strong id="co-phi">&mdash;</strong></div>
+      <div><span>\(\Delta\lambda/\lambda\)</span><strong id="co-rel">&mdash;</strong></div>
+    </div>
+
+    <div class="status" id="co-status">&mdash;</div>
+
+    <div class="callout teal" style="margin-bottom:0">
+      <span class="lab">Che cosa osservare</span>
+      <ul style="margin-bottom:0">
+        <li>\(\Delta\lambda\) dipende <b>solo dall'angolo</b>, non dalla lunghezza d'onda incidente: muovi \(\lambda\) e guarda che \(\Delta\lambda\) non cambia.</li>
+        <li>Quello che cambia è \(\Delta\lambda/\lambda\), cioè l'effetto <em>relativo</em>. Premi "Prova con luce visibile": lo spostamento resta di pochi picometri e diventa una frazione impercettibile. Per questo l'effetto si osserva con raggi X.</li>
+        <li>A \(\theta = 0\) non c'è scambio: nessuna deviazione, nessuna perdita di energia. Il massimo trasferimento è nella retrodiffusione.</li>
+        <li>L'elettrone parte sempre in avanti (\(\varphi &lt; 90°\)): la componente di quantità di moto lungo la direzione iniziale deve conservarsi.</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="pane" data-mod="3" data-pane="eserc" hidden>
+    <div class="panel">
+      <h3 style="margin-top:0">Formule di questo modulo</h3>
+      \[ \Delta\lambda = \lambda' - \lambda = \frac{h}{m_e c}(1-\cos\theta) \]\[ \lambda_C = \frac{h}{m_e c} = 2{,}43\ \mathrm{pm} \qquad p_{\text{fotone}} = \frac{h}{\lambda} \]
+    </div>
+    <div class="exlist" data-mod="3"></div>
+    <div class="panel" style="text-align:center">
+      <p style="margin:0"><b>Risolti correttamente: <span class="ex-count" data-mod="3">0</span> / <span class="ex-tot" data-mod="3">0</span></b></p>
+    </div>
+  </div>
+
+  <div class="pane" data-mod="3" data-pane="quiz" hidden>
+    <div id="quiz-m3"></div>
+  </div>
+</section>
+
+<section class="module" id="mod-4" role="tabpanel" aria-labelledby="tab-mod-4" hidden>
+  <div class="modhead">
+    <p class="modnum">Modulo 4 di 6</p>
+    <h1 class="modtitle">Dualismo onda-particella</h1>
+    <p class="modsub">de Broglie, la doppia fenditura e la probabilità che non è ignoranza.</p>
+  </div>
+
+  <div class="subtabs" role="tablist" data-mod="4" aria-label="Contenuti del modulo 4"></div>
+
+  <div class="pane" data-mod="4" data-pane="teoria">
   <h2 id="t4">4. Dualismo onda-particella</h2>
 
   <p>La situazione a questo punto è scomoda. Interferenza e diffrazione dicono che la luce è un'onda; effetto fotoelettrico e Compton dicono che è fatta di quanti con energia e quantità di moto definite. Non si può scegliere: servono entrambe le descrizioni, in esperimenti diversi. Questo è il <b>dualismo onda-particella</b>.</p>
@@ -680,7 +1014,85 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
     <p>"Ma da quale fenditura è passato in realtà?" è la domanda che tutti fanno. La risposta della meccanica quantistica non è "non lo sappiamo": è che quando la figura di interferenza c'è, l'affermazione "è passato dalla fenditura A" non è né vera né falsa, perché non corrisponde a nulla di misurabile. Se la misuriamo, la misura c'è — e in quel caso l'interferenza non c'è più. Non si tratta di ignoranza su un fatto nascosto: si tratta di un fatto che non è definito finché non lo si stabilisce con una misura, che a sua volta cambia il fenomeno.</p>
     <p>Questa è la parte che l'intuizione rifiuta più a lungo. Non è un difetto di comprensione: è il punto in cui il modello classico di "oggetto con proprietà definite in ogni istante" cessa di applicarsi.</p>
   </div>
+  </div>
 
+  <div class="pane" data-mod="4" data-pane="sim" hidden>
+
+  <p>Gli elettroni partono <b>uno alla volta</b>. Ciascuno viene rivelato come un singolo punto sullo schermo di destra: nessun elettrone arriva "spalmato". La figura non è nel singolo elettrone, è nella <em>statistica</em> dei punti. Per questo la simulazione va lasciata lavorare: nei primi cinquanta impatti non si vede nulla, dopo qualche migliaio la figura è nitida.</p>
+
+  <div class="panel simwrap">
+    <div class="canvasbox"><canvas id="cv-ds" height="370" aria-label="Simulazione della doppia fenditura con elettroni"></canvas></div>
+
+    <div class="ctrls">
+      <div class="ctrl">
+        <label for="ds-E">Energia elettroni <b><span id="ds-E-v">100</span> eV</b></label>
+        <input type="range" id="ds-E" min="10" max="400" step="5" value="100">
+      </div>
+      <div class="ctrl">
+        <label for="ds-d">Distanza fenditure \(d\) <b><span id="ds-d-v">0,60</span> nm</b></label>
+        <input type="range" id="ds-d" min="20" max="150" step="2" value="60">
+      </div>
+      <div class="ctrl">
+        <label for="ds-rate">Elettroni al secondo <b><span id="ds-rate-v">60</span></b></label>
+        <input type="range" id="ds-rate" min="1" max="400" step="1" value="60">
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button class="act" id="ds-run" type="button">Avvia</button>
+      <button class="ghost" id="ds-slits" type="button" aria-pressed="true">Due fenditure</button>
+      <button class="ghost" id="ds-which" type="button" aria-pressed="false">Rivelatore di percorso: off</button>
+      <button class="ghost" id="ds-curve" type="button" aria-pressed="true">Curva teorica</button>
+      <button class="ghost" id="ds-reset" type="button">Azzera schermo</button>
+      <button class="ghost" id="ds-burst" type="button">+2000 elettroni</button>
+    </div>
+
+    <div class="kv">
+      <div><span>\(\lambda_{dB} = h/p\)</span><strong id="ds-lam" class="hl">&mdash;</strong></div>
+      <div><span>Quantit&agrave; di moto \(p\)</span><strong id="ds-p">&mdash;</strong></div>
+      <div><span>\(\lambda/d\)</span><strong id="ds-ratio">&mdash;</strong></div>
+      <div><span>Ordini visibili</span><strong id="ds-ord">&mdash;</strong></div>
+      <div><span>Elettroni rivelati</span><strong id="ds-n">0</strong></div>
+      <div><span>Configurazione</span><strong id="ds-cfg">&mdash;</strong></div>
+    </div>
+
+    <div class="status" id="ds-status">&mdash;</div>
+
+    <div class="callout teal" style="margin-bottom:0">
+      <span class="lab">I tre esperimenti da fare</span>
+      <p><b>1.</b> Avvia con due fenditure e guarda i primi punti: casuali. Poi lascia arrivare a qualche migliaio: la figura c'è, senza che nessun singolo elettrone l'abbia "disegnata".</p>
+      <p><b>2.</b> Azzera e passa a <b>una fenditura</b>. Confronta le due figure: individua un punto dove con una fenditura arrivavano elettroni e con due non ne arriva nessuno. Aprire un cammino in più ha <em>tolto</em> possibilità di arrivo — cosa impossibile per palline che passano da una parte o dall'altra.</p>
+      <p><b>3.</b> Con due fenditure aperte, attiva il <b>rivelatore di percorso</b>. Le frange scompaiono e resta la somma delle due distribuzioni. Non c'è configurazione in cui si abbia insieme l'informazione sul percorso e l'interferenza.</p>
+    </div>
+  </div>
+  </div>
+
+  <div class="pane" data-mod="4" data-pane="eserc" hidden>
+    <div class="panel">
+      <h3 style="margin-top:0">Formule di questo modulo</h3>
+      \[ \lambda = \frac{h}{p} = \frac{h}{mv} \qquad \lambda = \frac{1{,}226}{\sqrt{V[\mathrm V]}}\ \mathrm{nm} \]\[ d\sin\theta = m\lambda \qquad P \propto |\psi_A + \psi_B|^2 \]
+    </div>
+    <div class="exlist" data-mod="4"></div>
+    <div class="panel" style="text-align:center">
+      <p style="margin:0"><b>Risolti correttamente: <span class="ex-count" data-mod="4">0</span> / <span class="ex-tot" data-mod="4">0</span></b></p>
+    </div>
+  </div>
+
+  <div class="pane" data-mod="4" data-pane="quiz" hidden>
+    <div id="quiz-m4"></div>
+  </div>
+</section>
+
+<section class="module" id="mod-5" role="tabpanel" aria-labelledby="tab-mod-5" hidden>
+  <div class="modhead">
+    <p class="modnum">Modulo 5 di 6</p>
+    <h1 class="modtitle">Modelli atomici e atomo di Bohr</h1>
+    <p class="modsub">Da Thomson agli spettri a righe: perché l'atomo classico non può esistere.</p>
+  </div>
+
+  <div class="subtabs" role="tablist" data-mod="5" aria-label="Contenuti del modulo 5"></div>
+
+  <div class="pane" data-mod="5" data-pane="teoria">
   <h2 id="t5">5. I modelli atomici</h2>
 
   <p>Parallelamente, un secondo filone di problemi riguarda la struttura dell'atomo. Qui la fisica classica non fallisce su un dettaglio: fallisce nel rendere l'atomo <em>stabile</em>.</p>
@@ -764,193 +1176,9 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
   <p><b>Cade:</b> l'idea dell'orbita. Un'orbita è una traiettoria, cioè posizione e velocità definite in ogni istante — proprio ciò che il principio di indeterminazione vieta. Inoltre il modello non funziona per atomi con più di un elettrone, non spiega le intensità relative delle righe né la loro struttura fine, e i postulati restano imposti dall'esterno invece di seguire da una teoria. La meccanica quantistica sostituirà le orbite con gli <b>orbitali</b>: distribuzioni di probabilità di presenza, senza traiettoria.</p>
 
   <p>Una notazione utile, dovuta a de Broglie: la condizione \(m v r = n\hbar\) equivale a dire che la circonferenza dell'orbita contiene un numero intero di lunghezze d'onda di de Broglie, \(2\pi r = n \lambda\). Le orbite permesse sono quelle in cui l'onda associata all'elettrone "si chiude" su se stessa, come un'onda stazionaria su una corda. È il primo indizio che la quantizzazione degli atomi e la natura ondulatoria della materia sono lo stesso fatto.</p>
-
-  <h2 id="t6">6. Il principio di indeterminazione di Heisenberg</h2>
-
-  <p>Nel 1927 Heisenberg formula un limite che non riguarda la nostra abilità sperimentale, ma la struttura stessa della realtà quantistica. Per la coppia posizione-quantità di moto:</p>
-  \[ \Delta x \cdot \Delta p_x \;\ge\; \frac{\hbar}{2}, \qquad \hbar = \frac{h}{2\pi} = 1{,}055\cdot10^{-34}\ \mathrm{J\,s} \]
-
-  <p>e per la coppia energia-tempo:</p>
-  \[ \Delta E \cdot \Delta t \;\ge\; \frac{\hbar}{2} \]
-
-  <p>In parole: più precisamente è definita la posizione di una particella lungo una direzione, meno è definita la sua quantità di moto nella stessa direzione, e viceversa. Il prodotto delle due indeterminazioni non può scendere sotto \(\hbar/2\).</p>
-
-  <div class="callout">
-    <span class="lab">Il fraintendimento da evitare</span>
-    <p>Il principio <b>non</b> dice: "i nostri strumenti disturbano il sistema, quindi non riusciamo a misurare bene". Questa lettura, comune e sbagliata, presuppone che la particella <em>abbia</em> una posizione e una quantità di moto precise che noi non riusciamo a leggere. Il principio dice qualcosa di più radicale: uno stato quantistico in cui entrambe le grandezze siano definite con precisione arbitraria <b>non esiste</b>. Non c'è un valore nascosto da scoprire.</p>
-    <p>È una proprietà della descrizione, non della strumentazione: migliorare la tecnologia non sposta il limite di un fattore due. Se un giorno leggerai che "l'indeterminazione dipende dall'errore di misura", quella frase è una semplificazione che tradisce il concetto.</p>
   </div>
 
-  <div class="callout teal">
-    <span class="lab">Un'analogia che regge (in parte)</span>
-    <p>Pensa a una nota musicale. Una nota perfettamente definita in frequenza — un la a 440 Hz esatti — richiede un'oscillazione infinitamente lunga: se dura un millesimo di secondo, non è più un la, è un "clic" che contiene un intervallo largo di frequenze. Durata breve e frequenza precisa sono incompatibili, non per colpa del microfono, ma perché "durata" e "frequenza" descrivono lo stesso oggetto in due modi che non possono essere entrambi netti.</p>
-    <p>La relazione \(\Delta E \cdot \Delta t \ge \hbar/2\) è esattamente questo, con \(E = hf\): uno stato che vive poco tempo non ha un'energia netta. Ha una conseguenza misurabile — le righe spettrali di stati a vita breve sono più <em>larghe</em>. Il limite dell'analogia: qui non stiamo descrivendo un'onda sonora nell'aria, ma un'ampiezza di probabilità, e la "larghezza" riguarda i risultati possibili di una misura, non l'ampiezza fisica di una vibrazione.</p>
-  </div>
-
-  <h4>Due conseguenze da conoscere</h4>
-
-  <p><b>Stabilità dell'atomo.</b> Perché l'elettrone non cade sul nucleo? Confinarlo in una regione piccolissima (\(\Delta x\) piccolo) impone una grande indeterminazione sulla quantità di moto, quindi una grande energia cinetica media. C'è un compromesso: troppo vicino al nucleo l'energia cinetica cresce più di quanto scenda l'energia potenziale. Il minimo della somma cade proprio intorno al raggio di Bohr. L'atomo ha una dimensione minima <em>perché</em> vale l'indeterminazione.</p>
-
-  <p><b>Stima veloce.</b> Confinando un elettrone in \(\Delta x = 0{,}10\) nm (dimensione atomica):</p>
-  \[ \Delta p \ge \frac{\hbar}{2\Delta x} = \frac{1{,}055\cdot10^{-34}}{2\cdot 1{,}0\cdot10^{-10}} \approx 5{,}3\cdot10^{-25}\ \mathrm{kg\,m/s} \]
-  \[ \Delta v = \frac{\Delta p}{m_e} \approx 5{,}8\cdot10^{5}\ \mathrm{m/s} \]
-
-  <p>L'indeterminazione sulla velocità è di centinaia di chilometri al secondo: dello stesso ordine della velocità stessa. Parlare di "velocità dell'elettrone nell'atomo" è quindi privo di senso operativo. Ripetendo lo stesso calcolo per un granello di polvere di \(10^{-9}\) kg localizzato entro un micrometro si ottiene \(\Delta v \sim 10^{-19}\) m/s: inosservabile. Ecco perché la meccanica classica funziona benissimo dove funziona.</p>
-
-  <h2 id="t7">7. Verso la meccanica quantistica: la funzione d'onda</h2>
-
-  <p>Nel 1926 Schrödinger scrive l'equazione che governa l'evoluzione dell'oggetto centrale della teoria: la <b>funzione d'onda</b> \(\psi(x, t)\). Non è necessario risolverla a questo livello; è invece essenziale capire che cosa rappresenta.</p>
-
-  <p>La funzione d'onda <b>non</b> è l'elettrone, e non è un'onda materiale che vibra nello spazio come un'onda sonora. È un'<b>ampiezza di probabilità</b>: un oggetto matematico il cui modulo quadro dà la densità di probabilità di trovare la particella in un punto, se lì si effettua una misura di posizione. Questa è l'<b>interpretazione probabilistica</b> di Born (1926):</p>
-  \[ P(x)\ \propto\ |\psi(x)|^{2} \]
-
-  <div class="callout amber">
-    <span class="lab">Probabilità come mappa di presenza, non come ignoranza</span>
-    <p>Quando in statistica diciamo "c'è il 30% di probabilità che il dado dia 5 o 6" descriviamo la nostra ignoranza: il dado, mentre rotola, ha in ogni istante una posizione e una velocità precise, e con dati abbastanza buoni potremmo in principio prevedere l'esito. La probabilità classica è ignoranza su un fatto già determinato.</p>
-    <p>La probabilità quantistica è di un'altra specie. \(|\psi|^2\) non descrive la nostra ignoranza su dove l'elettrone "sia già": descrive dove <em>può manifestarsi</em> quando lo si misura. Prima della misura non c'è un valore nascosto e determinato — se ci fosse, la doppia fenditura non funzionerebbe come funziona (il punto 4 di quell'esperimento è precisamente il test che esclude questa lettura). Il modo meno sbagliato di pensare a \(|\psi|^2\) è come a una <b>mappa di presenza</b>: dice quanto quella regione partecipa all'esistenza della particella.</p>
-  </div>
-
-  <p>Alcune proprietà chiave, dette a parole:</p>
-  <ul>
-    <li><b>Le ampiezze si sommano, le probabilità no.</b> Con due fenditure aperte, \(\psi = \psi_A + \psi_B\), e la probabilità è \(|\psi_A + \psi_B|^2\), non \(|\psi_A|^2 + |\psi_B|^2\). La differenza tra le due espressioni è il termine di interferenza, che può essere negativo: da qui le frange scure dove i due contributi si cancellano.</li>
-    <li><b>La quantizzazione nasce dalle condizioni al contorno.</b> Se una particella è confinata (in una buca di potenziale, in un atomo), solo certe funzioni d'onda si "chiudono" correttamente, esattamente come solo certe frequenze sono possibili su una corda di chitarra fissata agli estremi. I livelli energetici discreti non sono un postulato aggiunto a mano come in Bohr: sono una conseguenza matematica. Questo è il punto in cui la teoria di Schrödinger supera il modello di Bohr.</li>
-    <li><b>Orbitali al posto di orbite.</b> Nell'atomo la soluzione dell'equazione dà gli orbitali: regioni con una data distribuzione di \(|\psi|^2\). L'immagine corretta dell'atomo di idrogeno nello stato fondamentale non è un puntino che gira, ma una nuvola sfericamente simmetrica, più densa vicino al nucleo, il cui massimo di probabilità radiale cade a \(a_0\).</li>
-    <li><b>La misura.</b> Quando si misura la posizione, si ottiene <em>un</em> valore, e la descrizione successiva del sistema cambia di conseguenza. Come e perché questo avvenga è il problema della misura, ancora oggetto di interpretazioni diverse. Il fatto che la teoria funzioni con straordinaria precisione senza che questo punto sia chiuso è, di per sé, un'informazione onesta da avere.</li>
-  </ul>
-
-  <div class="callout">
-    <span class="lab">Il bilancio</span>
-    <p>In ventisette anni, dal 1900 al 1927, la fisica ha dovuto rinunciare a tre convinzioni che sembravano ovvie: che l'energia si scambi con continuità, che un oggetto abbia sempre posizione e velocità definite, e che il futuro sia in principio prevedibile con esattezza. In cambio ha ottenuto una teoria che spiega la stabilità della materia, gli spettri atomici, il legame chimico, i semiconduttori, i laser e le celle fotovoltaiche, con un accordo quantitativo che non ha eguali.</p>
-    <p>Se a questo punto l'insieme ti sembra corretto nei conti ma non ancora "credibile" nelle immagini, sei esattamente dove dovresti essere. La familiarità con la meccanica quantistica non si costruisce trovando l'analogia giusta: si costruisce usandola, e vedendo che i suoi conti tornano. Le prossime tre sezioni servono a questo.</p>
-  </div>
-
-  <div id="quiz-teoria"></div>
-
-</section>
-
-<section id="sec-sim" role="tabpanel" aria-labelledby="tab-sim" hidden>
-
-  <div class="callout">
-    <span class="lab">Come usare le simulazioni</span>
-    <p>Tre esperimenti che nella realtà richiedono un laboratorio, resi manipolabili. L'obiettivo non è guardarli: è cercare di <em>rompere</em> le previsioni. Prova a estrarre elettroni con luce rossa intensissima; prova a far comparire le frange chiudendo una fenditura; prova a far emettere un fotone rosso a una transizione della serie di Lyman. Il fatto che non riesca è l'informazione che stai cercando.</p>
-  </div>
-
-  <div class="subnav" id="toc-sim"></div>
-
-  <h2 id="s1">A. Effetto fotoelettrico</h2>
-
-  <p>I pacchetti d'onda a sinistra sono i fotoni: il loro <b>colore</b> e la loro <b>frequenza spaziale</b> dipendono dalla lunghezza d'onda scelta, il loro <b>numero</b> dall'intensità. Ogni pacchetto che raggiunge la superficie viene assorbito da un singolo elettrone. Se \(hf \ge W\) l'elettrone esce e viaggia verso il collettore con energia cinetica \(K_{max} = hf - W\); se \(hf &lt; W\) l'energia viene solo dissipata e non esce nulla, per quanti pacchetti si mandino.</p>
-
-  <div class="panel simwrap">
-    <div class="canvasbox"><canvas id="cv-pe" height="330" aria-label="Simulazione dell'effetto fotoelettrico"></canvas></div>
-
-    <div class="ctrls">
-      <div class="ctrl">
-        <label for="pe-lam">Lunghezza d'onda <b><span id="pe-lam-v">450</span> nm</b></label>
-        <input type="range" id="pe-lam" min="180" max="750" step="5" value="450">
-      </div>
-      <div class="ctrl">
-        <label for="pe-int">Intensit&agrave; luminosa <b><span id="pe-int-v">50</span>%</b></label>
-        <input type="range" id="pe-int" min="5" max="100" step="5" value="50">
-      </div>
-      <div class="ctrl">
-        <label for="pe-mat">Materiale del catodo <b><span id="pe-mat-v">Sodio</span></b></label>
-        <select id="pe-mat"></select>
-      </div>
-      <div class="ctrl">
-        <label for="pe-vstop">Tensione frenante <b><span id="pe-vstop-v">0,0</span> V</b></label>
-        <input type="range" id="pe-vstop" min="0" max="60" step="1" value="0">
-      </div>
-    </div>
-
-    <div class="status" id="pe-status">&mdash;</div>
-
-    <div class="kv">
-      <div><span>Frequenza \(f\)</span><strong id="pe-f">&mdash;</strong></div>
-      <div><span>Energia fotone \(hf\)</span><strong id="pe-E" class="hl">&mdash;</strong></div>
-      <div><span>Lavoro estrazione \(W\)</span><strong id="pe-W">&mdash;</strong></div>
-      <div><span>\(K_{max} = hf - W\)</span><strong id="pe-K">&mdash;</strong></div>
-      <div><span>Soglia \(f_0\)</span><strong id="pe-f0">&mdash;</strong></div>
-      <div><span>Soglia \(\lambda_0\)</span><strong id="pe-l0">&mdash;</strong></div>
-      <div><span>Potenziale d'arresto</span><strong id="pe-va">&mdash;</strong></div>
-      <div><span>Corrente rilevata</span><strong id="pe-cur">&mdash;</strong></div>
-    </div>
-
-    <div class="btnrow">
-      <button class="ghost" id="pe-pause" type="button" aria-pressed="false">Pausa</button>
-      <button class="ghost" id="pe-preset1" type="button">Prova: rosso intensissimo</button>
-      <button class="ghost" id="pe-preset2" type="button">Prova: UV debolissimo</button>
-    </div>
-
-    <div class="grid2" style="margin-top:16px">
-      <div>
-        <h4>Grafico \(K_{max}(f)\)</h4>
-        <div class="canvasbox"><canvas id="cv-pek" height="210" aria-label="Grafico dell'energia cinetica massima in funzione della frequenza"></canvas></div>
-      </div>
-      <div>
-        <h4>Che cosa osservare</h4>
-        <ul style="font-size:.93rem">
-          <li>Muovi <b>solo l'intensità</b>: la corrente cambia, \(K_{max}\) resta fissa. Gli elettroni escono più numerosi, non più veloci.</li>
-          <li>Muovi <b>solo la lunghezza d'onda</b> verso il basso (frequenza in alto): \(K_{max}\) cresce linearmente e gli elettroni si vedono partire più rapidi.</li>
-          <li>Attraversa \(\lambda_0\): l'emissione si spegne <b>di colpo</b>, non gradualmente. Sotto soglia, l'intensità al 100% non serve a nulla.</li>
-          <li>Cambia materiale: il punto rappresentativo salta su un'altra retta <b>parallela</b>. La pendenza è \(h\) e non dipende dal metallo.</li>
-          <li>Alza la <b>tensione frenante</b> fino ad annullare la corrente: quel valore è il potenziale d'arresto, e misura \(K_{max}\) in elettronvolt.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
-  <h2 id="s2">B. Doppia fenditura con elettroni</h2>
-
-  <p>Gli elettroni partono <b>uno alla volta</b>. Ciascuno viene rivelato come un singolo punto sullo schermo di destra: nessun elettrone arriva "spalmato". La figura non è nel singolo elettrone, è nella <em>statistica</em> dei punti. Per questo la simulazione va lasciata lavorare: nei primi cinquanta impatti non si vede nulla, dopo qualche migliaio la figura è nitida.</p>
-
-  <div class="panel simwrap">
-    <div class="canvasbox"><canvas id="cv-ds" height="370" aria-label="Simulazione della doppia fenditura con elettroni"></canvas></div>
-
-    <div class="ctrls">
-      <div class="ctrl">
-        <label for="ds-E">Energia elettroni <b><span id="ds-E-v">100</span> eV</b></label>
-        <input type="range" id="ds-E" min="10" max="400" step="5" value="100">
-      </div>
-      <div class="ctrl">
-        <label for="ds-d">Distanza fenditure \(d\) <b><span id="ds-d-v">0,60</span> nm</b></label>
-        <input type="range" id="ds-d" min="20" max="150" step="2" value="60">
-      </div>
-      <div class="ctrl">
-        <label for="ds-rate">Elettroni al secondo <b><span id="ds-rate-v">60</span></b></label>
-        <input type="range" id="ds-rate" min="1" max="400" step="1" value="60">
-      </div>
-    </div>
-
-    <div class="btnrow">
-      <button class="act" id="ds-run" type="button">Avvia</button>
-      <button class="ghost" id="ds-slits" type="button" aria-pressed="true">Due fenditure</button>
-      <button class="ghost" id="ds-which" type="button" aria-pressed="false">Rivelatore di percorso: off</button>
-      <button class="ghost" id="ds-curve" type="button" aria-pressed="true">Curva teorica</button>
-      <button class="ghost" id="ds-reset" type="button">Azzera schermo</button>
-      <button class="ghost" id="ds-burst" type="button">+2000 elettroni</button>
-    </div>
-
-    <div class="kv">
-      <div><span>\(\lambda_{dB} = h/p\)</span><strong id="ds-lam" class="hl">&mdash;</strong></div>
-      <div><span>Quantit&agrave; di moto \(p\)</span><strong id="ds-p">&mdash;</strong></div>
-      <div><span>\(\lambda/d\)</span><strong id="ds-ratio">&mdash;</strong></div>
-      <div><span>Ordini visibili</span><strong id="ds-ord">&mdash;</strong></div>
-      <div><span>Elettroni rivelati</span><strong id="ds-n">0</strong></div>
-      <div><span>Configurazione</span><strong id="ds-cfg">&mdash;</strong></div>
-    </div>
-
-    <div class="status" id="ds-status">&mdash;</div>
-
-    <div class="callout teal" style="margin-bottom:0">
-      <span class="lab">I tre esperimenti da fare</span>
-      <p><b>1.</b> Avvia con due fenditure e guarda i primi punti: casuali. Poi lascia arrivare a qualche migliaio: la figura c'è, senza che nessun singolo elettrone l'abbia "disegnata".</p>
-      <p><b>2.</b> Azzera e passa a <b>una fenditura</b>. Confronta le due figure: individua un punto dove con una fenditura arrivavano elettroni e con due non ne arriva nessuno. Aprire un cammino in più ha <em>tolto</em> possibilità di arrivo — cosa impossibile per palline che passano da una parte o dall'altra.</p>
-      <p><b>3.</b> Con due fenditure aperte, attiva il <b>rivelatore di percorso</b>. Le frange scompaiono e resta la somma delle due distribuzioni. Non c'è configurazione in cui si abbia insieme l'informazione sul percorso e l'interferenza.</p>
-    </div>
-  </div>
-
-  <h2 id="s3">C. Modello di Bohr e spettro dell'idrogeno</h2>
+  <div class="pane" data-mod="5" data-pane="sim" hidden>
 
   <p>Scegli il livello di arrivo: se è più basso l'atomo <b>emette</b> un fotone (l'elettrone scende), se è più alto deve <b>assorbirlo</b> (l'elettrone sale solo se arriva il fotone giusto). L'energia del fotone è esattamente \(|E_i - E_f|\), e da questa segue la lunghezza d'onda, quindi il colore. Le righe visibili appaiono nello spettro in basso con il loro <b>colore reale</b>.</p>
 
@@ -998,55 +1226,163 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
       </ul>
     </div>
   </div>
-
-  <div id="quiz-sim"></div>
-</section>
-
-<section id="sec-eserc" role="tabpanel" aria-labelledby="tab-eserc" hidden>
-
-  <div class="callout">
-    <span class="lab">Metodo</span>
-    <p>Dodici problemi in ordine di difficoltà crescente. Ogni problema ha aiuti progressivi: il primo indica quale relazione usare, gli altri accompagnano il calcolo. Usarli non è barare — usarli <em>prima</em> di aver provato lo è, perché ti toglie l'unica informazione utile, cioè dove ti blocchi.</p>
-    <p>Scrivi il risultato in <b>notazione decimale</b> (0,0529) o <b>scientifica</b> (5,29e-2 oppure 5.29e-2). La virgola e il punto sono equivalenti. La tolleranza accettata è di circa il 2%, quindi non serve trascinare tutte le cifre: arrotonda a tre cifre significative.</p>
   </div>
 
-  <div class="subnav" id="toc-eserc"></div>
-
-  <div class="panel" id="e-form">
-    <h3 style="margin-top:0">Formulario di riferimento</h3>
-    <div class="grid2">
-      <div>
-        <p style="margin-bottom:2px"><b>Quanti di luce</b></p>
-        \[ E = hf = \frac{hc}{\lambda}, \quad p = \frac{h}{\lambda} \]
-        \[ E[\mathrm{eV}] = \frac{1240}{\lambda[\mathrm{nm}]} \]
-        <p style="margin-bottom:2px"><b>Effetto fotoelettrico</b></p>
-        \[ K_{max} = hf - W, \quad f_0 = \frac{W}{h}, \quad eV_a = K_{max} \]
-        <p style="margin-bottom:2px"><b>Compton</b></p>
-        \[ \Delta\lambda = \frac{h}{m_e c}(1-\cos\theta) \]
-      </div>
-      <div>
-        <p style="margin-bottom:2px"><b>de Broglie</b></p>
-        \[ \lambda = \frac{h}{p} = \frac{h}{mv}, \quad \lambda = \frac{1{,}226}{\sqrt{V[\mathrm V]}}\,\mathrm{nm} \]
-        <p style="margin-bottom:2px"><b>Atomo di Bohr (idrogeno)</b></p>
-        \[ E_n = -\frac{13{,}6\,\mathrm{eV}}{n^2}, \quad r_n = n^2 \cdot 0{,}0529\ \mathrm{nm} \]
-        \[ hf = E_i - E_f, \quad \frac{1}{\lambda} = R_H\!\left(\frac{1}{n_f^2}-\frac{1}{n_i^2}\right) \]
-        <p style="margin-bottom:2px"><b>Indeterminazione</b></p>
-        \[ \Delta x\,\Delta p \ge \frac{\hbar}{2}, \quad \Delta E\,\Delta t \ge \frac{\hbar}{2} \]
-      </div>
+  <div class="pane" data-mod="5" data-pane="eserc" hidden>
+    <div class="panel">
+      <h3 style="margin-top:0">Formule di questo modulo</h3>
+      \[ E_n = -\frac{13{,}6\ \mathrm{eV}}{n^2} \qquad r_n = n^2 a_0,\ a_0 = 0{,}0529\ \mathrm{nm} \]\[ hf = E_i - E_f \qquad \frac{1}{\lambda} = R_H\!\left(\frac{1}{n_f^2}-\frac{1}{n_i^2}\right) \]
+    </div>
+    <div class="exlist" data-mod="5"></div>
+    <div class="panel" style="text-align:center">
+      <p style="margin:0"><b>Risolti correttamente: <span class="ex-count" data-mod="5">0</span> / <span class="ex-tot" data-mod="5">0</span></b></p>
     </div>
   </div>
 
-  <h2 id="e-prob" style="margin-top:28px">Problemi</h2>
-  <div id="exlist"></div>
-
-  <div class="panel" id="exsummary" style="text-align:center">
-    <p style="margin:0"><b>Risolti correttamente: <span id="ex-count">0</span> / 12</b></p>
+  <div class="pane" data-mod="5" data-pane="quiz" hidden>
+    <div id="quiz-m5"></div>
   </div>
-
-  <div id="quiz-eserc"></div>
 </section>
 
-<section id="sec-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+<section class="module" id="mod-6" role="tabpanel" aria-labelledby="tab-mod-6" hidden>
+  <div class="modhead">
+    <p class="modnum">Modulo 6 di 6</p>
+    <h1 class="modtitle">Indeterminazione e funzione d'onda</h1>
+    <p class="modsub">Un limite che non dipende dallo strumento, e la mappa di presenza che lo esprime.</p>
+  </div>
+
+  <div class="subtabs" role="tablist" data-mod="6" aria-label="Contenuti del modulo 6"></div>
+
+  <div class="pane" data-mod="6" data-pane="teoria">
+  <h2 id="t6">6. Il principio di indeterminazione di Heisenberg</h2>
+
+  <p>Nel 1927 Heisenberg formula un limite che non riguarda la nostra abilità sperimentale, ma la struttura stessa della realtà quantistica. Per la coppia posizione-quantità di moto:</p>
+  \[ \Delta x \cdot \Delta p_x \;\ge\; \frac{\hbar}{2}, \qquad \hbar = \frac{h}{2\pi} = 1{,}055\cdot10^{-34}\ \mathrm{J\,s} \]
+
+  <p>e per la coppia energia-tempo:</p>
+  \[ \Delta E \cdot \Delta t \;\ge\; \frac{\hbar}{2} \]
+
+  <p>In parole: più precisamente è definita la posizione di una particella lungo una direzione, meno è definita la sua quantità di moto nella stessa direzione, e viceversa. Il prodotto delle due indeterminazioni non può scendere sotto \(\hbar/2\).</p>
+
+  <div class="callout">
+    <span class="lab">Il fraintendimento da evitare</span>
+    <p>Il principio <b>non</b> dice: "i nostri strumenti disturbano il sistema, quindi non riusciamo a misurare bene". Questa lettura, comune e sbagliata, presuppone che la particella <em>abbia</em> una posizione e una quantità di moto precise che noi non riusciamo a leggere. Il principio dice qualcosa di più radicale: uno stato quantistico in cui entrambe le grandezze siano definite con precisione arbitraria <b>non esiste</b>. Non c'è un valore nascosto da scoprire.</p>
+    <p>È una proprietà della descrizione, non della strumentazione: migliorare la tecnologia non sposta il limite di un fattore due. Se un giorno leggerai che "l'indeterminazione dipende dall'errore di misura", quella frase è una semplificazione che tradisce il concetto.</p>
+  </div>
+
+  <div class="callout teal">
+    <span class="lab">Un'analogia che regge (in parte)</span>
+    <p>Pensa a una nota musicale. Una nota perfettamente definita in frequenza — un la a 440 Hz esatti — richiede un'oscillazione infinitamente lunga: se dura un millesimo di secondo, non è più un la, è un "clic" che contiene un intervallo largo di frequenze. Durata breve e frequenza precisa sono incompatibili, non per colpa del microfono, ma perché "durata" e "frequenza" descrivono lo stesso oggetto in due modi che non possono essere entrambi netti.</p>
+    <p>La relazione \(\Delta E \cdot \Delta t \ge \hbar/2\) è esattamente questo, con \(E = hf\): uno stato che vive poco tempo non ha un'energia netta. Ha una conseguenza misurabile — le righe spettrali di stati a vita breve sono più <em>larghe</em>. Il limite dell'analogia: qui non stiamo descrivendo un'onda sonora nell'aria, ma un'ampiezza di probabilità, e la "larghezza" riguarda i risultati possibili di una misura, non l'ampiezza fisica di una vibrazione.</p>
+  </div>
+
+  <h4>Due conseguenze da conoscere</h4>
+
+  <p><b>Stabilità dell'atomo.</b> Perché l'elettrone non cade sul nucleo? Confinarlo in una regione piccolissima (\(\Delta x\) piccolo) impone una grande indeterminazione sulla quantità di moto, quindi una grande energia cinetica media. C'è un compromesso: troppo vicino al nucleo l'energia cinetica cresce più di quanto scenda l'energia potenziale. Il minimo della somma cade proprio intorno al raggio di Bohr. L'atomo ha una dimensione minima <em>perché</em> vale l'indeterminazione.</p>
+
+  <p><b>Stima veloce.</b> Confinando un elettrone in \(\Delta x = 0{,}10\) nm (dimensione atomica):</p>
+  \[ \Delta p \ge \frac{\hbar}{2\Delta x} = \frac{1{,}055\cdot10^{-34}}{2\cdot 1{,}0\cdot10^{-10}} \approx 5{,}3\cdot10^{-25}\ \mathrm{kg\,m/s} \]
+  \[ \Delta v = \frac{\Delta p}{m_e} \approx 5{,}8\cdot10^{5}\ \mathrm{m/s} \]
+
+  <p>L'indeterminazione sulla velocità è di centinaia di chilometri al secondo: dello stesso ordine della velocità stessa. Parlare di "velocità dell'elettrone nell'atomo" è quindi privo di senso operativo. Ripetendo lo stesso calcolo per un granello di polvere di \(10^{-9}\) kg localizzato entro un micrometro si ottiene \(\Delta v \sim 10^{-19}\) m/s: inosservabile. Ecco perché la meccanica classica funziona benissimo dove funziona.</p>
+  <h2 id="t7">7. Verso la meccanica quantistica: la funzione d'onda</h2>
+
+  <p>Nel 1926 Schrödinger scrive l'equazione che governa l'evoluzione dell'oggetto centrale della teoria: la <b>funzione d'onda</b> \(\psi(x, t)\). Non è necessario risolverla a questo livello; è invece essenziale capire che cosa rappresenta.</p>
+
+  <p>La funzione d'onda <b>non</b> è l'elettrone, e non è un'onda materiale che vibra nello spazio come un'onda sonora. È un'<b>ampiezza di probabilità</b>: un oggetto matematico il cui modulo quadro dà la densità di probabilità di trovare la particella in un punto, se lì si effettua una misura di posizione. Questa è l'<b>interpretazione probabilistica</b> di Born (1926):</p>
+  \[ P(x)\ \propto\ |\psi(x)|^{2} \]
+
+  <div class="callout amber">
+    <span class="lab">Probabilità come mappa di presenza, non come ignoranza</span>
+    <p>Quando in statistica diciamo "c'è il 30% di probabilità che il dado dia 5 o 6" descriviamo la nostra ignoranza: il dado, mentre rotola, ha in ogni istante una posizione e una velocità precise, e con dati abbastanza buoni potremmo in principio prevedere l'esito. La probabilità classica è ignoranza su un fatto già determinato.</p>
+    <p>La probabilità quantistica è di un'altra specie. \(|\psi|^2\) non descrive la nostra ignoranza su dove l'elettrone "sia già": descrive dove <em>può manifestarsi</em> quando lo si misura. Prima della misura non c'è un valore nascosto e determinato — se ci fosse, la doppia fenditura non funzionerebbe come funziona (il punto 4 di quell'esperimento è precisamente il test che esclude questa lettura). Il modo meno sbagliato di pensare a \(|\psi|^2\) è come a una <b>mappa di presenza</b>: dice quanto quella regione partecipa all'esistenza della particella.</p>
+  </div>
+
+  <p>Alcune proprietà chiave, dette a parole:</p>
+  <ul>
+    <li><b>Le ampiezze si sommano, le probabilità no.</b> Con due fenditure aperte, \(\psi = \psi_A + \psi_B\), e la probabilità è \(|\psi_A + \psi_B|^2\), non \(|\psi_A|^2 + |\psi_B|^2\). La differenza tra le due espressioni è il termine di interferenza, che può essere negativo: da qui le frange scure dove i due contributi si cancellano.</li>
+    <li><b>La quantizzazione nasce dalle condizioni al contorno.</b> Se una particella è confinata (in una buca di potenziale, in un atomo), solo certe funzioni d'onda si "chiudono" correttamente, esattamente come solo certe frequenze sono possibili su una corda di chitarra fissata agli estremi. I livelli energetici discreti non sono un postulato aggiunto a mano come in Bohr: sono una conseguenza matematica. Questo è il punto in cui la teoria di Schrödinger supera il modello di Bohr.</li>
+    <li><b>Orbitali al posto di orbite.</b> Nell'atomo la soluzione dell'equazione dà gli orbitali: regioni con una data distribuzione di \(|\psi|^2\). L'immagine corretta dell'atomo di idrogeno nello stato fondamentale non è un puntino che gira, ma una nuvola sfericamente simmetrica, più densa vicino al nucleo, il cui massimo di probabilità radiale cade a \(a_0\).</li>
+    <li><b>La misura.</b> Quando si misura la posizione, si ottiene <em>un</em> valore, e la descrizione successiva del sistema cambia di conseguenza. Come e perché questo avvenga è il problema della misura, ancora oggetto di interpretazioni diverse. Il fatto che la teoria funzioni con straordinaria precisione senza che questo punto sia chiuso è, di per sé, un'informazione onesta da avere.</li>
+  </ul>
+
+  <div class="callout">
+    <span class="lab">Il bilancio</span>
+    <p>In ventisette anni, dal 1900 al 1927, la fisica ha dovuto rinunciare a tre convinzioni che sembravano ovvie: che l'energia si scambi con continuità, che un oggetto abbia sempre posizione e velocità definite, e che il futuro sia in principio prevedibile con esattezza. In cambio ha ottenuto una teoria che spiega la stabilità della materia, gli spettri atomici, il legame chimico, i semiconduttori, i laser e le celle fotovoltaiche, con un accordo quantitativo che non ha eguali.</p>
+    <p>Se a questo punto l'insieme ti sembra corretto nei conti ma non ancora "credibile" nelle immagini, sei esattamente dove dovresti essere. La familiarità con la meccanica quantistica non si costruisce trovando l'analogia giusta: si costruisce usandola, e vedendo che i suoi conti tornano. Le prossime tre sezioni servono a questo.</p>
+  </div>
+  </div>
+
+  <div class="pane" data-mod="6" data-pane="sim" hidden>
+
+  <p>Sopra: la funzione d'onda di una particella localizzata, un pacchetto la cui ampiezza è concentrata in una regione di larghezza \(\Delta x\). Sotto: la distribuzione delle quantità di moto che quel pacchetto contiene. Le due larghezze non sono indipendenti — stringi l'una e l'altra si allarga, con il prodotto vincolato dal basso.</p>
+
+  <div class="panel simwrap">
+    <div class="canvasbox"><canvas id="cv-psi" height="380" data-h-narrow="340" aria-label="Pacchetto d'onda e distribuzione delle quantità di moto"></canvas></div>
+
+    <div class="ctrls">
+      <div class="ctrl">
+        <label for="ps-dx">Larghezza \(\Delta x\) <b><span id="ps-dx-v">0,20</span> nm</b></label>
+        <input type="range" id="ps-dx" min="2" max="120" step="1" value="20">
+      </div>
+      <div class="ctrl">
+        <label for="ps-p">Quantità di moto media <b><span id="ps-p-v">100</span> eV</b></label>
+        <input type="range" id="ps-p" min="1" max="400" step="1" value="100">
+      </div>
+    </div>
+
+    <div class="btnrow">
+      <button class="ghost" id="ps-mod" type="button" aria-pressed="true">Mostra \(|\psi|^2\)</button>
+      <button class="ghost" id="ps-loc" type="button">Molto localizzato</button>
+      <button class="ghost" id="ps-wave" type="button">Quasi onda piana</button>
+      <button class="ghost" id="ps-atom" type="button">Elettrone in un atomo</button>
+    </div>
+
+    <div class="kv">
+      <div><span>\(\Delta x\)</span><strong id="ps-dx2" class="hl">&mdash;</strong></div>
+      <div><span>\(\Delta p\) minima</span><strong id="ps-dp">&mdash;</strong></div>
+      <div><span>\(\Delta x\,\Delta p/\hbar\)</span><strong id="ps-prod">&mdash;</strong></div>
+      <div><span>\(\Delta v\) elettrone</span><strong id="ps-dv">&mdash;</strong></div>
+      <div><span>\(\lambda\) media</span><strong id="ps-lam">&mdash;</strong></div>
+      <div><span>\(\Delta p / p\)</span><strong id="ps-rel">&mdash;</strong></div>
+    </div>
+
+    <div class="status" id="ps-status">&mdash;</div>
+
+    <div class="callout teal" style="margin-bottom:0">
+      <span class="lab">Che cosa osservare</span>
+      <ul style="margin-bottom:0">
+        <li>Il prodotto \(\Delta x\,\Delta p/\hbar\) resta fisso al minimo consentito, \(0{,}5\), per qualunque larghezza: non è una coincidenza, è il vincolo.</li>
+        <li>Con "molto localizzato" il pacchetto contiene poche oscillazioni e la distribuzione delle quantità di moto è larghissima: la particella non ha una velocità definita.</li>
+        <li>Con "quasi onda piana" hai una lunghezza d'onda ben definita — quindi una quantità di moto precisa — ma la particella non è più in nessun posto in particolare.</li>
+        <li>Con "elettrone in un atomo" (\(\Delta x \approx 0{,}1\) nm) l'indeterminazione sulla velocità supera i \(10^5\) m/s: è la ragione per cui "l'orbita dell'elettrone" non è una descrizione utilizzabile.</li>
+      </ul>
+    </div>
+  </div>
+  </div>
+
+  <div class="pane" data-mod="6" data-pane="eserc" hidden>
+    <div class="panel">
+      <h3 style="margin-top:0">Formule di questo modulo</h3>
+      \[ \Delta x\,\Delta p \ge \frac{\hbar}{2} \qquad \Delta E\,\Delta t \ge \frac{\hbar}{2} \]\[ \hbar = \frac{h}{2\pi} = 1{,}055\cdot10^{-34}\ \mathrm{J\,s} \qquad P(x) \propto |\psi(x)|^2 \]
+    </div>
+    <div class="exlist" data-mod="6"></div>
+    <div class="panel" style="text-align:center">
+      <p style="margin:0"><b>Risolti correttamente: <span class="ex-count" data-mod="6">0</span> / <span class="ex-tot" data-mod="6">0</span></b></p>
+    </div>
+  </div>
+
+  <div class="pane" data-mod="6" data-pane="quiz" hidden>
+    <div id="quiz-m6"></div>
+  </div>
+</section>
+
+<section class="module" id="mod-fin" role="tabpanel" aria-labelledby="tab-mod-fin" hidden>
+  <div class="modhead">
+    <p class="modnum">Verifica conclusiva</p>
+    <h1 class="modtitle">Riepilogo di tutti i moduli</h1>
+    <p class="modsub">Dieci domande di teoria e cinque problemi su tutto il programma, con punteggio alla consegna.</p>
+  </div>
 
   <div class="callout">
     <span class="lab">Verifica finale di riepilogo</span>
@@ -1057,13 +1393,9 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
   <div id="quiz-finale"></div>
 
   <div class="panel">
-    <h3 style="margin-top:0">Quiz per sezione</h3>
-    <p>Ogni sezione ha il proprio quiz a riscontro immediato, con dieci domande di teoria e cinque problemi sui soli argomenti di quella sezione. Conviene affrontarli prima di questa verifica finale: i link qui sotto portano direttamente al quiz, senza passare per il contenuto della sezione.</p>
-    <div class="subnav" style="margin-bottom:0">
-      <button type="button" class="q" data-goto="teoria" data-quiz="quiz-teoria">Quiz sezione 1 &middot; Teoria &rarr;</button>
-      <button type="button" class="q" data-goto="sim" data-quiz="quiz-sim">Quiz sezione 2 &middot; Simulazioni &rarr;</button>
-      <button type="button" class="q" data-goto="eserc" data-quiz="quiz-eserc">Quiz sezione 3 &middot; Esercizi &rarr;</button>
-    </div>
+    <h3 style="margin-top:0">Quiz dei singoli moduli</h3>
+    <p>Ogni modulo ha il proprio quiz a riscontro immediato, sui soli argomenti di quel modulo. I link portano direttamente al quiz.</p>
+    <div class="subnav" id="quizlinks" style="margin-bottom:0"></div>
   </div>
 </section>
 
@@ -1223,27 +1555,106 @@ themeBtn.addEventListener("click", (ev) => {
 });
 
 /* ============================================================
-   2. NAVIGAZIONE A SEZIONI (nessun header sticky)
+   2. NAVIGAZIONE: MODULI E SCHEDE INTERNE
+   Il percorso e' diviso in moduli tematici; dentro ciascuno le
+   quattro schede teoria / simulazioni / esercizi / quiz mostrano
+   il contenuto specifico di quel modulo. Nessun header sticky:
+   la barra dei moduli scorre con la pagina.
    ============================================================ */
-const SECTIONS = ["teoria", "sim", "eserc", "quiz"];
-function showSection(name, scroll) {
-  if (SECTIONS.indexOf(name) < 0) name = "teoria";
-  SECTIONS.forEach(s => {
-    const tab = $("#tab-" + s), sec = $("#sec-" + s);
-    const on = s === name;
-    tab.setAttribute("aria-selected", on ? "true" : "false");
-    sec.hidden = !on;
+const MODULI = [
+  { id: "1",   nav: "Corpo nero e Planck",   sotto: "crisi della fisica classica" },
+  { id: "2",   nav: "Effetto fotoelettrico", sotto: "i quanti di luce" },
+  { id: "3",   nav: "Effetto Compton",       sotto: "quantità di moto del fotone" },
+  { id: "4",   nav: "Dualismo onda-particella", sotto: "de Broglie, doppia fenditura" },
+  { id: "5",   nav: "Atomo di Bohr",         sotto: "modelli atomici e spettri" },
+  { id: "6",   nav: "Indeterminazione",      sotto: "Heisenberg, funzione d'onda" },
+  { id: "fin", nav: "Verifica finale",       sotto: "riepilogo, 10 + 5 domande" }
+];
+const PANE = [
+  ["teoria", "Teoria"], ["sim", "Simulazione"], ["eserc", "Esercizi"], ["quiz", "Quiz del modulo"]
+];
+const MODID = MODULI.map(m => m.id);
+
+let modCorrente = "1";
+const paneCorrente = {};                 // ultima scheda visitata per ogni modulo
+MODID.forEach(id => paneCorrente[id] = "teoria");
+
+/* barra dei moduli */
+$("#modnav").innerHTML = MODULI.map((m, i) =>
+  '<button class="navbtn" role="tab" type="button" id="tab-mod-' + m.id + '" aria-controls="mod-' + m.id + '"' +
+  ' aria-selected="' + (i === 0 ? "true" : "false") + '" data-mod="' + m.id + '">' +
+  '<span class="mn">' + (m.id === "fin" ? "Verifica" : "Modulo " + m.id) + '</span>' +
+  "<b>" + m.nav + "</b><span>" + m.sotto + "</span></button>").join("");
+
+$("#modnav").addEventListener("click", e => {
+  const b = e.target.closest("[data-mod]");
+  if (b) mostraModulo(b.getAttribute("data-mod"));
+});
+
+/* schede interne a ogni modulo */
+$$(".subtabs").forEach(host => {
+  const mod = host.getAttribute("data-mod");
+  host.innerHTML = PANE.map((p, i) =>
+    '<button role="tab" type="button" data-pane="' + p[0] + '" aria-selected="' + (i === 0 ? "true" : "false") + '">' +
+    p[1] + (p[0] === "eserc" ? ' <span class="cnt" data-extot="' + mod + '"></span>' : "") +
+    (p[0] === "quiz" ? ' <span class="cnt" data-qtot="' + mod + '"></span>' : "") + "</button>").join("");
+  host.addEventListener("click", e => {
+    const b = e.target.closest("[data-pane]");
+    if (b) mostraPane(mod, b.getAttribute("data-pane"));
   });
-  if (history.replaceState) history.replaceState(null, "", "#" + name);
+});
+
+function mostraModulo(id, scroll) {
+  if (MODID.indexOf(id) < 0) id = "1";
+  modCorrente = id;
+  MODULI.forEach(m => {
+    const on = m.id === id;
+    $("#tab-mod-" + m.id).setAttribute("aria-selected", on ? "true" : "false");
+    document.getElementById("mod-" + m.id).hidden = !on;
+  });
+  aggiornaHash();
   if (scroll !== false) {
-    const y = $("header").offsetHeight - 60;
+    const y = $("header").offsetHeight - 56;
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
   }
-  onSectionShown(name);
+  /* riapre la scheda su cui si era rimasti in questo modulo */
+  mostraPane(id, paneCorrente[id] || "teoria");
 }
-SECTIONS.forEach(s => {
-  $("#tab-" + s).addEventListener("click", () => showSection(s));
-});
+
+function mostraPane(mod, pane, scroll) {
+  paneCorrente[mod] = pane;
+  const sec = document.getElementById("mod-" + mod);
+  if (!sec) return;
+  $$(".subtabs[data-mod='" + mod + "'] [data-pane]", sec).forEach(b =>
+    b.setAttribute("aria-selected", b.getAttribute("data-pane") === pane ? "true" : "false"));
+  $$(".pane[data-mod='" + mod + "']", sec).forEach(p =>
+    p.hidden = p.getAttribute("data-pane") !== pane);
+  aggiornaHash();
+  if (scroll) {
+    const t = $(".subtabs", sec);
+    if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 12, behavior: "smooth" });
+  }
+  paneMostrato(mod, pane);
+}
+
+/* la scheda "Verifica finale" non ha schede interne */
+function paneAttivo() { return modCorrente === "fin" ? "quiz" : (paneCorrente[modCorrente] || "teoria"); }
+
+function aggiornaHash() {
+  if (!history.replaceState) return;
+  const p = modCorrente === "fin" ? "" : "/" + (paneCorrente[modCorrente] || "teoria");
+  history.replaceState(null, "", "#m" + modCorrente + p);
+}
+
+function leggiHash() {
+  const h = (location.hash || "").replace("#", "");
+  const parts = h.split("/");
+  const mod = (parts[0] || "").replace(/^m/, "");
+  if (MODID.indexOf(mod) < 0) return null;
+  const pane = PANE.some(p => p[0] === parts[1]) ? parts[1] : "teoria";
+  return { mod: mod, pane: pane };
+}
+
 /* scorrimento a un elemento per id */
 function scrollToId(id) {
   const el = document.getElementById(id);
@@ -1251,14 +1662,14 @@ function scrollToId(id) {
   window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 14, behavior: "smooth" });
 }
 
-/* link fra sezioni; con data-quiz porta direttamente al quiz di quella sezione */
+/* collegamenti fra moduli: data-goto="3" e, se presente, data-pane */
 document.addEventListener("click", e => {
   const a = e.target.closest("[data-goto]");
   if (!a) return;
   e.preventDefault();
-  const q = a.getAttribute("data-quiz");
-  showSection(a.getAttribute("data-goto"), !q);
-  if (q) requestAnimationFrame(() => scrollToId(q));
+  const mod = a.getAttribute("data-goto"), pane = a.getAttribute("data-pane-goto");
+  if (pane) paneCorrente[mod] = pane;
+  mostraModulo(mod);
 });
 
 /* pulsante torna su */
@@ -1267,33 +1678,6 @@ window.addEventListener("scroll", () => {
   toTop.classList.toggle("show", window.scrollY > 700);
 }, { passive: true });
 toTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
-
-/* indici interni alle sezioni: voci dell'argomento + scorciatoia al quiz */
-const SUBNAV = [
-  { host: "toc", quiz: "quiz-teoria", items: [
-    ["t1", "1. Crisi della fisica classica"], ["t2", "2. Effetto fotoelettrico"],
-    ["t3", "3. Effetto Compton"], ["t4", "4. Dualismo onda-particella"],
-    ["t5", "5. Modelli atomici"], ["t6", "6. Indeterminazione"],
-    ["t7", "7. Funzione d'onda"]
-  ]},
-  { host: "toc-sim", quiz: "quiz-sim", items: [
-    ["s1", "A. Effetto fotoelettrico"], ["s2", "B. Doppia fenditura"], ["s3", "C. Modello di Bohr"]
-  ]},
-  { host: "toc-eserc", quiz: "quiz-eserc", items: [
-    ["e-form", "Formulario"], ["e-prob", "I 12 problemi"]
-  ]}
-];
-SUBNAV.forEach(cfg => {
-  const host = document.getElementById(cfg.host);
-  if (!host) return;
-  host.innerHTML =
-    cfg.items.map(t => '<button type="button" data-jump="' + t[0] + '">' + t[1] + "</button>").join("") +
-    '<button type="button" class="q" data-jump="' + cfg.quiz + '">Quiz di sezione &rarr;</button>';
-});
-document.addEventListener("click", e => {
-  const b = e.target.closest(".subnav [data-jump]");
-  if (b) scrollToId(b.getAttribute("data-jump"));
-});
 
 /* ============================================================
    3. DIAGRAMMI SVG STATICI (generati, quindi tematizzabili)
@@ -2593,18 +2977,586 @@ function drawSpec() {
 }
 
 /* ============================================================
-   8. LOOP DI ANIMAZIONE (solo la sezione visibile)
+   7bis. SIMULAZIONE — SPETTRO DEL CORPO NERO (modulo 1)
    ============================================================ */
-let visible = "teoria", lastT = performance.now();
-function onSectionShown(name) {
-  visible = name;
-  if (name === "sim") { CANVASES.forEach(o => fit(o)); dsMakeBuf(); dsRenderBuf(); redrawAll(); }
+const KB = 1.380649e-23;
+const PL = { T: 5000, scale: "auto", rj: true, keep: [], fixRef: 0, dirty: true };
+
+function planck(l, T) {           // l in metri
+  return (8 * Math.PI * H_JS * C_MS / Math.pow(l, 5)) / (Math.exp(H_JS * C_MS / (l * KB * T)) - 1);
 }
+function rayleigh(l, T) { return 8 * Math.PI * KB * T / Math.pow(l, 4); }
+function planckPeak(T) { return planck(2.898e-3 / T, T); }
+
+(function initPL() {
+  const o = setupCanvas("cv-planck", drawPL);
+  if (!o) return;
+  function readUI() {
+    PL.T = +$("#pl-T").value;
+    PL.scale = $("#pl-scale").value;
+    $("#pl-T-v").textContent = PL.T;
+    $("#pl-scale-v").textContent = PL.scale === "auto" ? "automatica" : "fissa";
+    PL.fixRef = Math.max(PL.fixRef, planckPeak(PL.T));
+    PL.dirty = true;
+    plReadout();
+  }
+  $("#pl-T").addEventListener("input", readUI);
+  $("#pl-scale").addEventListener("change", readUI);
+  $("#pl-rj").addEventListener("click", e => {
+    PL.rj = !PL.rj;
+    e.currentTarget.setAttribute("aria-pressed", PL.rj ? "true" : "false");
+    e.currentTarget.textContent = "Curva classica: " + (PL.rj ? "on" : "off");
+    PL.dirty = true;
+  });
+  $("#pl-keep").addEventListener("click", () => {
+    if (PL.keep.indexOf(PL.T) < 0) PL.keep.push(PL.T);
+    PL.dirty = true;
+  });
+  $("#pl-clear").addEventListener("click", () => { PL.keep = []; PL.fixRef = planckPeak(PL.T); PL.dirty = true; });
+  $("#pl-sun").addEventListener("click", () => { $("#pl-T").value = 5750; readUI(); });
+  $("#pl-body").addEventListener("click", () => { $("#pl-T").value = 800; readUI(); });
+  readUI();
+})();
+
+function plReadout() {
+  const T = PL.T;
+  const lmax = 2.898e-3 / T;                  // m
+  const lnm = lmax * 1e9;
+  const I = 5.670e-8 * Math.pow(T, 4);
+  const Equanto = HC_EVNM / lnm;
+  const ratio = (HC_EVNM / 200) * QE / (KB * T);
+  $("#pl-lmax").textContent = lnm >= 1000 ? num(lnm / 1000, 2) + " µm" : num(lnm, 0) + " nm";
+  $("#pl-band").textContent = bandOf(lnm) === "visibile" ? "visibile" : (lnm < 380 ? "ultravioletto" : "infrarosso");
+  const c = wl2rgb(clamp(lnm, 380, 780));
+  $("#pl-col").textContent = lnm > 780 ? "nessuno: solo IR" : (lnm < 380 ? "oltre il violetto" : coloreDi(lnm));
+  $("#pl-col").style.color = lnm > 780 ? "" : rgbStr(c);
+  $("#pl-pow").textContent = I >= 1e6 ? sci(I, 2) + " W/m²" : num(I, 0) + " W/m²";
+  $("#pl-quanto").textContent = num(Equanto, 3) + " eV";
+  $("#pl-ratio").textContent = num(ratio, 1);
+  const st = $("#pl-status");
+  st.className = "status" + (bandOf(lnm) === "visibile" ? " on" : "");
+  st.textContent = "A " + T + " K il massimo cade a " + (lnm >= 1000 ? num(lnm / 1000, 2) + " µm" : num(lnm, 0) + " nm") +
+    ". Un quanto a quella lunghezza d'onda vale " + num(Equanto, 3) + " eV, mentre l'energia termica tipica kT è " +
+    num(KB * T / QE, 3) + " eV: il rapporto hf/kT a 200 nm vale " + num(ratio, 1) +
+    (ratio > 10 ? ", quindi i modi ultravioletti sono praticamente spenti ed è questo a rendere finita l'energia totale."
+                : ", quindi anche i modi di alta frequenza cominciano a essere popolati.");
+}
+function coloreDi(nm) {
+  if (nm < 450) return "violetto";
+  if (nm < 490) return "blu";
+  if (nm < 510) return "ciano";
+  if (nm < 560) return "verde";
+  if (nm < 590) return "giallo";
+  if (nm < 630) return "arancione";
+  return "rosso";
+}
+
+function drawPL() {
+  const o = CANVASES.find(c => c.cv.id === "cv-planck");
+  if (!o) return;
+  const ctx = o.ctx, W = o.w, H = o.h;
+  const x0 = 52, y0 = H - 42, x1 = W - 14, y1 = 20;
+  const lamMax = 2500e-9;
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = TH.panel2; ctx.fillRect(0, 0, W, H);
+
+  const ref = PL.scale === "auto" ? planckPeak(PL.T) : Math.max(PL.fixRef, planckPeak(PL.T));
+  const SX = l => x0 + (l / lamMax) * (x1 - x0);
+  const SY = u => y0 - clamp(u / (ref * 1.1), 0, 1.06) * (y0 - y1);
+
+  /* griglia e assi */
+  ctx.strokeStyle = TH.grid; ctx.lineWidth = 1;
+  for (let k = 1; k <= 5; k++) {
+    const gx = x0 + k / 5 * (x1 - x0);
+    ctx.beginPath(); ctx.moveTo(gx, y0); ctx.lineTo(gx, y1); ctx.stroke();
+    label(ctx, Math.round(k / 5 * 2500) + "", gx, y0 + 15, TH.muted, 9.5, "center");
+  }
+  /* banda visibile */
+  for (let l = 380; l <= 780; l += 6) {
+    ctx.fillStyle = rgbStr(wl2rgb(l), 0.85);
+    ctx.fillRect(SX(l * 1e-9), y0 + 1, (6e-9) / lamMax * (x1 - x0) + 1, 7);
+  }
+  label(ctx, "visibile", SX(580e-9), y0 + 28, TH.muted, 9.5, "center");
+  label(ctx, "λ (nm)", x1, y0 + 28, TH.muted, 10, "right");
+  label(ctx, "densità di energia", x0 - 4, y1 - 6, TH.muted, 10);
+
+  ctx.strokeStyle = TH.line2; ctx.lineWidth = 1.3;
+  ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y0); ctx.moveTo(x0, y0); ctx.lineTo(x0, y1); ctx.stroke();
+
+  /* curve fissate */
+  PL.keep.forEach(T => {
+    ctx.strokeStyle = TH.line2; ctx.lineWidth = 1.4; ctx.globalAlpha = 0.85;
+    ctx.beginPath();
+    for (let i = 1; i <= 300; i++) {
+      const l = i / 300 * lamMax, y = SY(planck(l, T));
+      if (i === 1) ctx.moveTo(SX(l), y); else ctx.lineTo(SX(l), y);
+    }
+    ctx.stroke(); ctx.globalAlpha = 1;
+    const lm = 2.898e-3 / T;
+    label(ctx, T + " K", SX(lm) + 5, SY(planck(lm, T)) - 5, TH.muted, 9.5);
+  });
+
+  /* Rayleigh-Jeans */
+  if (PL.rj) {
+    ctx.strokeStyle = TH.no; ctx.lineWidth = 2; ctx.setLineDash([7, 5]);
+    ctx.beginPath();
+    let started = false;
+    for (let i = 1; i <= 300; i++) {
+      const l = i / 300 * lamMax, u = rayleigh(l, PL.T);
+      if (u > ref * 1.15) continue;
+      if (!started) { ctx.moveTo(SX(l), y1); started = true; }
+      ctx.lineTo(SX(l), SY(u));
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+    label(ctx, "Rayleigh-Jeans: diverge", x1 - 4, y1 + 12, TH.no, 10.5, "right");
+  }
+
+  /* curva di Planck corrente */
+  ctx.strokeStyle = TH.q; ctx.lineWidth = 2.6;
+  ctx.beginPath();
+  for (let i = 1; i <= 400; i++) {
+    const l = i / 400 * lamMax, y = SY(planck(l, PL.T));
+    if (i === 1) ctx.moveTo(SX(l), y); else ctx.lineTo(SX(l), y);
+  }
+  ctx.stroke();
+
+  /* riempimento sotto la curva, con il colore del massimo */
+  const lm = 2.898e-3 / PL.T, lmn = lm * 1e9;
+  const col = wl2rgb(clamp(lmn, 380, 780));
+  ctx.globalAlpha = 0.12; ctx.fillStyle = lmn > 780 ? TH.no : rgbStr(col);
+  ctx.lineTo(SX(lamMax), y0); ctx.lineTo(x0, y0); ctx.closePath(); ctx.fill();
+  ctx.globalAlpha = 1;
+
+  /* marcatore di Wien */
+  const mx = SX(lm), my = SY(planck(lm, PL.T));
+  ctx.setLineDash([3, 3]); ctx.strokeStyle = TH.amber; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(mx, y0); ctx.lineTo(mx, my); ctx.stroke(); ctx.setLineDash([]);
+  ctx.fillStyle = TH.amber; ctx.beginPath(); ctx.arc(mx, my, 4.5, 0, 6.2832); ctx.fill();
+  label(ctx, PL.T + " K", mx + 8, my - 8, TH.q, 11.5, mx > W * 0.72 ? "right" : "left");
+  label(ctx, "λmax", mx + 8, my + 6, TH.amber, 9.5, mx > W * 0.72 ? "right" : "left");
+  label(ctx, PL.scale === "auto" ? "scala automatica" : "scala fissa: le altezze sono confrontabili",
+        x0 + 6, y1 + 12, TH.muted, 9.5);
+}
+function stepPlanck() { if (PL.dirty) { PL.dirty = false; drawPL(); } }
+
+/* ============================================================
+   7ter. SIMULAZIONE — URTO COMPTON (modulo 3)
+   ============================================================ */
+const LAM_C_PM = 2.42631;                 // lunghezza d'onda Compton, pm
+const HC_EVPM = HC_EVNM * 1000;           // 1,24e6 eV pm
+const MEC2 = 510999;                      // eV
+
+const CO = { lam: 10, th: 90, vec: true, t: 0 };
+
+function coQuant() {
+  const th = CO.th * Math.PI / 180;
+  const dl = LAM_C_PM * (1 - Math.cos(th));
+  const lam2 = CO.lam + dl;
+  const E = HC_EVPM / CO.lam, E2 = HC_EVPM / lam2;
+  const Ke = E - E2;
+  const alpha = E / MEC2;
+  let phi;
+  if (CO.th === 0) phi = 0;
+  else if (CO.th === 180) phi = 0;
+  else phi = Math.atan(1 / ((1 + alpha) * Math.tan(th / 2))) * 180 / Math.PI;
+  const pe = Math.sqrt(Ke * Ke + 2 * Ke * MEC2) / C_MS * QE;   // kg m/s
+  return { th: th, dl: dl, lam2: lam2, E: E, E2: E2, Ke: Ke, phi: phi, pe: pe };
+}
+
+(function initCO() {
+  const o = setupCanvas("cv-compton", drawCO);
+  if (!o) return;
+  function readUI() {
+    CO.lam = +$("#co-lam").value;
+    CO.th = +$("#co-th").value;
+    $("#co-lam-v").textContent = CO.lam;
+    $("#co-th-v").textContent = CO.th;
+    coReadout();
+  }
+  $("#co-lam").addEventListener("input", readUI);
+  $("#co-th").addEventListener("input", readUI);
+  $("#co-run").addEventListener("click", () => { CO.t = 0; });
+  $("#co-vec").addEventListener("click", e => {
+    CO.vec = !CO.vec;
+    e.currentTarget.setAttribute("aria-pressed", CO.vec ? "true" : "false");
+  });
+  $("#co-90").addEventListener("click", () => { $("#co-th").value = 90; CO.t = 0; readUI(); });
+  $("#co-180").addEventListener("click", () => { $("#co-th").value = 180; CO.t = 0; readUI(); });
+  $("#co-vis").addEventListener("click", () => { $("#co-lam").value = 60; CO.t = 0; readUI(); });
+  readUI();
+})();
+
+function coReadout() {
+  const q = coQuant();
+  $("#co-dl").textContent = num(q.dl, 3) + " pm";
+  $("#co-lam2").textContent = num(q.lam2, 2) + " pm";
+  $("#co-E").textContent = num(q.E / 1000, 1) + " keV";
+  $("#co-E2").textContent = num(q.E2 / 1000, 1) + " keV";
+  $("#co-Ke").textContent = num(q.Ke / 1000, 2) + " keV";
+  $("#co-frac").textContent = num(q.Ke / q.E * 100, 1) + " %";
+  $("#co-phi").textContent = CO.th === 0 ? "—" : num(q.phi, 1) + "°";
+  $("#co-rel").textContent = num(q.dl / CO.lam * 100, 2) + " %";
+  const st = $("#co-status");
+  const rel = q.dl / CO.lam;
+  if (CO.th === 0) {
+    st.className = "status";
+    st.textContent = "Nessuna deviazione: il fotone prosegue indisturbato, Δλ = 0 e l'elettrone resta fermo. " +
+      "Senza scambio di quantità di moto non c'è perdita di energia.";
+  } else if (rel < 0.001) {
+    st.className = "status off";
+    st.textContent = "Lo spostamento è " + num(q.dl, 2) + " pm, cioè appena il " + num(rel * 100, 3) +
+      "% della lunghezza d'onda incidente: con radiazione di questa lunghezza d'onda l'effetto Compton è " +
+      "impossibile da misurare. È la ragione per cui serve la regione dei raggi X.";
+  } else {
+    st.className = "status on";
+    st.textContent = "Il fotone cede " + num(q.Ke / 1000, 2) + " keV all'elettrone, cioè il " +
+      num(q.Ke / q.E * 100, 1) + "% della propria energia, e riparte con λ' = " + num(q.lam2, 2) +
+      " pm. Lo spostamento Δλ = " + num(q.dl, 3) + " pm dipende solo dall'angolo, non da λ.";
+  }
+}
+
+function drawCO() {
+  const o = CANVASES.find(c => c.cv.id === "cv-compton");
+  if (!o) return;
+  const ctx = o.ctx, W = o.w, H = o.h;
+  const q = coQuant();
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = TH.panel2; ctx.fillRect(0, 0, W, H);
+
+  const cx = W * 0.32, cy = H * 0.60;
+  const R = Math.min(W * 0.44, cy - 42);
+  const isX = CO.lam < 100;
+  const colPh = isX ? [148, 118, 222] : [214, 74, 60];
+
+  /* --- direzioni: rette guida con punta di freccia, sempre visibili --- */
+  function freccia(x, y, dx, dy, col, lw, dash) {
+    ctx.strokeStyle = col; ctx.lineWidth = lw || 2;
+    if (dash) ctx.setLineDash(dash);
+    ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + dx, y + dy); ctx.stroke();
+    ctx.setLineDash([]);
+    const ang = Math.atan2(dy, dx), s = 7;
+    ctx.fillStyle = col; ctx.beginPath();
+    ctx.moveTo(x + dx, y + dy);
+    ctx.lineTo(x + dx - s * Math.cos(ang - 0.42), y + dy - s * Math.sin(ang - 0.42));
+    ctx.lineTo(x + dx - s * Math.cos(ang + 0.42), y + dy - s * Math.sin(ang + 0.42));
+    ctx.closePath(); ctx.fill();
+  }
+  function chip(txt, x, y, col, size, align) {
+    ctx.font = "600 " + (size || 10.5) + "px system-ui, sans-serif";
+    const w = ctx.measureText(txt).width + 10;
+    const ax = align === "right" ? x - w : (align === "center" ? x - w / 2 : x);
+    ctx.fillStyle = TH.panel2; ctx.globalAlpha = 0.9;
+    ctx.fillRect(ax, y - 11, w, 15); ctx.globalAlpha = 1;
+    label(ctx, txt, ax + 5, y, col, size || 10.5);
+  }
+
+  const thR = q.th, phR = q.phi * Math.PI / 180;
+  /* fotone incidente */
+  freccia(24, cy, cx - 50, 0, rgbStr(colPh, 0.45), 1.6, [6, 5]);
+  chip("fotone incidente  λ = " + CO.lam + " pm", 26, cy - 12, rgbStr(colPh), 10.5);
+  /* fotone diffuso */
+  if (CO.th !== 0) {
+    freccia(cx + 14 * Math.cos(-thR), cy + 14 * Math.sin(-thR),
+            (R - 14) * Math.cos(-thR), (R - 14) * Math.sin(-thR), rgbStr(colPh, 0.45), 1.6, [6, 5]);
+  }
+  /* elettrone di rinculo */
+  freccia(cx + 20 * Math.cos(phR), cy + 20 * Math.sin(phR),
+          (R * 0.72) * Math.cos(phR), (R * 0.72) * Math.sin(phR), rgbStr([20, 150, 150], 0.4), 1.6, [6, 5]);
+
+  /* archi degli angoli */
+  ctx.strokeStyle = TH.amber; ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.arc(cx, cy, 44, -thR, 0); ctx.stroke();
+  chip("θ = " + CO.th + "°", cx + 52 * Math.cos(-thR / 2), cy + 52 * Math.sin(-thR / 2), TH.amber, 11.5);
+  if (CO.th !== 0 && CO.th !== 180) {
+    ctx.strokeStyle = TH.teal; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.arc(cx, cy, 22, 0, phR); ctx.stroke();
+    chip("φ = " + num(q.phi, 0) + "°", cx + 8, cy + 42, TH.teal, 10.5);
+  }
+
+  /* --- pacchetto d'onda animato --- */
+  function pacchetto(x, y, ang, lamPm, alpha, scale) {
+    ctx.save(); ctx.translate(x, y); ctx.rotate(ang);
+    const k = clamp(26 / lamPm, 0.3, 2.4), A = 9 * (scale || 1);
+    ctx.strokeStyle = rgbStr(colPh, alpha);
+    for (let pass = 0; pass < 2; pass++) {
+      ctx.lineWidth = pass ? 6 : 2;
+      ctx.globalAlpha = pass ? 0.22 * alpha : alpha;
+      ctx.beginPath();
+      for (let i = -26; i <= 26; i += 1) {
+        const env = Math.exp(-(i * i) / 200);
+        const yy = Math.sin(i * k) * A * env;
+        if (i === -26) ctx.moveTo(i, yy); else ctx.lineTo(i, yy);
+      }
+      ctx.stroke();
+    }
+    ctx.globalAlpha = 1; ctx.restore();
+  }
+
+  const T = CO.t % 3.2;
+  if (T < 1.3) {                                   /* il fotone arriva */
+    const f = T / 1.3;
+    pacchetto(lerp(34, cx - 26, f), cy, 0, CO.lam, 1, 1);
+    ctx.fillStyle = TH.teal;
+    ctx.beginPath(); ctx.arc(cx, cy, 7, 0, 6.2832); ctx.fill();
+    chip("e⁻ in quiete", cx + 12, cy + 26, TH.teal, 10.5);
+  } else {                                         /* dopo l'urto */
+    const f = clamp((T - 1.3) / 1.7, 0, 1);
+    if (CO.th !== 0) {
+      const d = 26 + f * (R - 26);
+      pacchetto(cx + d * Math.cos(-thR), cy + d * Math.sin(-thR), -thR, q.lam2, 1, 1);
+    } else {
+      pacchetto(cx + 26 + f * (R - 26), cy, 0, q.lam2, 1, 1);
+    }
+    const de = 14 + f * R * 0.72;
+    const ex = cx + de * Math.cos(phR), ey = cy + de * Math.sin(phR);
+    ctx.fillStyle = TH.teal;
+    ctx.beginPath(); ctx.arc(ex, ey, 7, 0, 6.2832); ctx.fill();
+    ctx.fillStyle = TH.teal; ctx.globalAlpha = 0.18;
+    ctx.beginPath(); ctx.arc(ex, ey, 13, 0, 6.2832); ctx.fill(); ctx.globalAlpha = 1;
+    chip("e⁻ · " + num(q.Ke / 1000, 1) + " keV", ex + 12, ey + 20, TH.teal, 10.5);
+  }
+  /* punto d'urto */
+  ctx.strokeStyle = TH.line2; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.arc(cx, cy, 3, 0, 6.2832); ctx.stroke();
+
+  /* etichetta del fotone diffuso, all'estremo della sua direzione */
+  if (CO.th !== 0) {
+    const lx = cx + (R + 4) * Math.cos(-thR), ly = cy + (R + 4) * Math.sin(-thR);
+    chip("λ' = " + num(q.lam2, 2) + " pm", clamp(lx, 8, W - 130), clamp(ly, 20, H - 30), rgbStr(colPh), 10.5);
+  }
+
+  /* --- triangolo delle quantità di moto --- */
+  if (CO.vec) {
+    const bw = 150, bh = 122, bx = W - bw - 12, by = 12;
+    ctx.fillStyle = TH.panel; ctx.strokeStyle = TH.line; ctx.lineWidth = 1;
+    roundRect(ctx, bx, by, bw, bh, 9); ctx.fill(); ctx.stroke();
+    label(ctx, "quantità di moto", bx + 10, by + 17, TH.ink2, 9.5);
+    label(ctx, "p = p' + pₑ", bx + 10, by + bh - 9, TH.muted, 9.5);
+    const s = 56, p2 = CO.lam / q.lam2;
+    const vx = s * p2 * Math.cos(-thR), vy = s * p2 * Math.sin(-thR);
+    /* il triangolo cambia forma con l'angolo: lo si centra nel riquadro */
+    const xs = [0, s, vx], ys = [0, 0, vy];
+    const mnx = Math.min.apply(null, xs), mxx = Math.max.apply(null, xs);
+    const mny = Math.min.apply(null, ys), mxy = Math.max.apply(null, ys);
+    const ox = bx + (bw - (mxx - mnx)) / 2 - mnx;
+    const oy = by + 26 + (bh - 44 - (mxy - mny)) / 2 - mny;
+    function etichetta(txt, x0, y0, x1, y1, col) {
+      const nx = -(y1 - y0), ny = (x1 - x0), L = Math.hypot(nx, ny) || 1;
+      const px = clamp((x0 + x1) / 2 + nx / L * 11, bx + 6, bx + bw - 18);
+      const py = clamp((y0 + y1) / 2 + ny / L * 11 + 3, by + 30, by + bh - 16);
+      label(ctx, txt, px, py, col, 10, "center");
+    }
+    freccia(ox, oy, s, 0, TH.q, 2.2);
+    etichetta("p", ox, oy, ox + s, oy, TH.q);
+    freccia(ox, oy, vx, vy, rgbStr(colPh), 2.2);
+    etichetta("p'", ox, oy, ox + vx, oy + vy, rgbStr(colPh));
+    freccia(ox + vx, oy + vy, s - vx, -vy, TH.teal, 2.2);
+    etichetta("pₑ", ox + vx, oy + vy, ox + s, oy, TH.teal);
+  }
+
+  /* --- barra dati in basso --- */
+  ctx.fillStyle = TH.line; ctx.globalAlpha = 0.5;
+  ctx.fillRect(16, H - 30, W - 32, 1); ctx.globalAlpha = 1;
+  label(ctx, "E = " + num(q.E / 1000, 1) + " keV", 18, H - 12, TH.ink2, 10.5);
+  label(ctx, "E' = " + num(q.E2 / 1000, 1) + " keV", W * 0.36, H - 12, rgbStr(colPh), 10.5);
+  label(ctx, "Kₑ = " + num(q.Ke / 1000, 2) + " keV", W * 0.60, H - 12, TH.teal, 10.5);
+  label(ctx, "Δλ = " + num(q.dl, 3) + " pm", W - 18, H - 12, TH.amber, 10.5, "right");
+}
+function stepCompton(dt) { CO.t += dt; drawCO(); }
+
+/* ============================================================
+   7quater. SIMULAZIONE — PACCHETTO D'ONDA (modulo 6)
+   ============================================================ */
+const PS = { dx: 0.20, E: 100, mod: true, t: 0 };
+
+function psQuant() {
+  const dxm = PS.dx * 1e-9;
+  const dp = HBAR / (2 * dxm);
+  const p = Math.sqrt(2 * ME_KG * PS.E * QE);
+  const lam = H_JS / p * 1e9;              // nm
+  return { dxm: dxm, dp: dp, p: p, lam: lam, dv: dp / ME_KG, rel: dp / p };
+}
+
+(function initPS() {
+  const o = setupCanvas("cv-psi", drawPS);
+  if (!o) return;
+  function readUI() {
+    PS.dx = +$("#ps-dx").value / 100;
+    PS.E = +$("#ps-p").value;
+    $("#ps-dx-v").textContent = num(PS.dx, 2);
+    $("#ps-p-v").textContent = PS.E;
+    psReadout();
+  }
+  $("#ps-dx").addEventListener("input", readUI);
+  $("#ps-p").addEventListener("input", readUI);
+  $("#ps-mod").addEventListener("click", e => {
+    PS.mod = !PS.mod;
+    e.currentTarget.setAttribute("aria-pressed", PS.mod ? "true" : "false");
+  });
+  $("#ps-loc").addEventListener("click", () => { $("#ps-dx").value = 3; readUI(); });
+  $("#ps-wave").addEventListener("click", () => { $("#ps-dx").value = 110; readUI(); });
+  $("#ps-atom").addEventListener("click", () => { $("#ps-dx").value = 10; $("#ps-p").value = 13; readUI(); });
+  readUI();
+})();
+
+function psReadout() {
+  const q = psQuant();
+  $("#ps-dx2").textContent = num(PS.dx, 3) + " nm";
+  $("#ps-dp").textContent = sci(q.dp, 2) + " kg m/s";
+  $("#ps-prod").textContent = "0,50 (minimo)";
+  $("#ps-dv").textContent = sci(q.dv, 2) + " m/s";
+  $("#ps-lam").textContent = num(q.lam, 4) + " nm";
+  $("#ps-rel").textContent = num(q.rel * 100, 1) + " %";
+  const st = $("#ps-status");
+  if (q.rel > 0.31) {
+    st.className = "status off";
+    st.textContent = "L'indeterminazione sulla quantità di moto è il " + num(q.rel * 100, 0) +
+      "% del valore medio: con un pacchetto così stretto la particella non ha una velocità definita in alcun senso utile. " +
+      "La distribuzione arriva a comprendere valori negativi, quindi non è definito nemmeno il verso del moto. " +
+      "Nel disegno il pacchetto contiene poche oscillazioni, e infatti non gli si può attribuire una lunghezza d'onda precisa.";
+  } else if (q.rel < 0.02) {
+    st.className = "status on";
+    st.textContent = "Quantità di moto ben definita (indeterminazione relativa " + num(q.rel * 100, 1) +
+      "%), ma il prezzo è la delocalizzazione: il pacchetto si estende su " + num(PS.dx, 2) +
+      " nm, molte volte la lunghezza d'onda. Si sa quanto va veloce, non dove si trova.";
+  } else {
+    st.className = "status";
+    st.textContent = "Δx = " + num(PS.dx, 2) + " nm e Δp = " + sci(q.dp, 2) +
+      " kg m/s danno Δv = " + sci(q.dv, 2) + " m/s. Il prodotto Δx·Δp vale ħ/2 esattamente: " +
+      "questo pacchetto è al limite consentito, nessuno stato può fare meglio.";
+  }
+}
+
+function drawPS() {
+  const o = CANVASES.find(c => c.cv.id === "cv-psi");
+  if (!o) return;
+  const ctx = o.ctx, W = o.w, H = o.h;
+  const q = psQuant();
+  ctx.clearRect(0, 0, W, H);
+  ctx.fillStyle = TH.panel2; ctx.fillRect(0, 0, W, H);
+
+  const m = 46, top1 = 26, bot1 = H * 0.50, top2 = H * 0.60, bot2 = H - 40;
+  const cy1 = (top1 + bot1) / 2, cy2 = bot2;
+
+  /* ---- pannello superiore: funzione d'onda nello spazio ---- */
+  const range = Math.max(PS.dx * 3.2, q.lam * 2.2);      // nm, semiampiezza
+  const SX = x => m + (x / (2 * range) + 0.5) * (W - m - 16);
+  ctx.strokeStyle = TH.line2; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(m, cy1); ctx.lineTo(W - 16, cy1); ctx.stroke();
+  label(ctx, "ψ(x)", m - 6, top1 + 4, TH.muted, 10.5, "right");
+  label(ctx, "posizione x (nm)", W - 16, bot1 - 4, TH.muted, 9.5, "right");
+
+  const amp = (bot1 - top1) * 0.34;
+  /* |psi|^2 riempito */
+  if (PS.mod) {
+    ctx.fillStyle = TH.q; ctx.globalAlpha = 0.16;
+    ctx.beginPath(); ctx.moveTo(SX(-range), cy1);
+    for (let x = -range; x <= range; x += range / 240) {
+      const env = Math.exp(-(x * x) / (2 * PS.dx * PS.dx));
+      ctx.lineTo(SX(x), cy1 - env * env * amp);
+    }
+    ctx.lineTo(SX(range), cy1); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+  }
+  /* parte reale del pacchetto */
+  ctx.strokeStyle = TH.q; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let x = -range; x <= range; x += range / 400) {
+    const env = Math.exp(-(x * x) / (2 * PS.dx * PS.dx));
+    const y = cy1 - Math.cos(2 * Math.PI * x / q.lam - PS.t * 4) * env * amp;
+    if (x === -range) ctx.moveTo(SX(x), y); else ctx.lineTo(SX(x), y);
+  }
+  ctx.stroke();
+  /* inviluppo */
+  ctx.strokeStyle = TH.amber; ctx.lineWidth = 1.2; ctx.setLineDash([4, 4]);
+  ctx.beginPath();
+  for (let x = -range; x <= range; x += range / 200) {
+    const env = Math.exp(-(x * x) / (2 * PS.dx * PS.dx));
+    const y = cy1 - env * amp;
+    if (x === -range) ctx.moveTo(SX(x), y); else ctx.lineTo(SX(x), y);
+  }
+  ctx.stroke(); ctx.setLineDash([]);
+  /* barra Δx, sotto il pacchetto per non coprirlo */
+  const yb = bot1 - 6;
+  ctx.strokeStyle = TH.amber; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(SX(-PS.dx), yb); ctx.lineTo(SX(PS.dx), yb); ctx.stroke();
+  [-PS.dx, PS.dx].forEach(x => { ctx.beginPath(); ctx.moveTo(SX(x), yb - 5); ctx.lineTo(SX(x), yb + 5); ctx.stroke(); });
+  const txt = "Δx = " + num(PS.dx, 2) + " nm";
+  ctx.font = "600 10.5px system-ui, sans-serif";
+  const tw = ctx.measureText(txt).width + 10;
+  ctx.fillStyle = TH.panel2;
+  ctx.fillRect(SX(0) - tw / 2, yb - 18, tw, 14);
+  label(ctx, txt, SX(0), yb - 7, TH.amber, 10.5, "center");
+
+  /* ---- pannello inferiore: distribuzione delle quantità di moto ---- */
+  ctx.strokeStyle = TH.line2; ctx.lineWidth = 1.2;
+  ctx.beginPath(); ctx.moveTo(m, cy2); ctx.lineTo(W - 16, cy2); ctx.stroke();
+  label(ctx, "|φ(p)|²", m - 6, top2 + 4, TH.muted, 10.5, "right");
+  label(ctx, "quantità di moto p", W - 16, bot2 + 18, TH.muted, 9.5, "right");
+
+  const spread = 3.2 * Math.max(q.dp, q.p * 0.02);
+  const pmax = q.p + spread, pmin = q.p - spread;   /* non si taglia a zero:
+     per un pacchetto molto stretto la distribuzione invade i valori negativi,
+     cioe' la particella potrebbe muoversi anche in verso opposto */
+  const SP = p => m + (p - pmin) / (pmax - pmin) * (W - m - 16);
+  const amp2 = (cy2 - top2) * 0.86;
+  ctx.fillStyle = TH.teal; ctx.globalAlpha = 0.20;
+  ctx.beginPath(); ctx.moveTo(SP(pmin), cy2);
+  for (let i = 0; i <= 300; i++) {
+    const p = pmin + i / 300 * (pmax - pmin);
+    const g = Math.exp(-Math.pow(p - q.p, 2) / (2 * q.dp * q.dp));
+    ctx.lineTo(SP(p), cy2 - g * amp2);
+  }
+  ctx.lineTo(SP(pmax), cy2); ctx.closePath(); ctx.fill(); ctx.globalAlpha = 1;
+  ctx.strokeStyle = TH.teal; ctx.lineWidth = 2;
+  ctx.beginPath();
+  for (let i = 0; i <= 300; i++) {
+    const p = pmin + i / 300 * (pmax - pmin);
+    const g = Math.exp(-Math.pow(p - q.p, 2) / (2 * q.dp * q.dp));
+    if (i === 0) ctx.moveTo(SP(p), cy2 - g * amp2); else ctx.lineTo(SP(p), cy2 - g * amp2);
+  }
+  ctx.stroke();
+  /* barra Δp */
+  ctx.strokeStyle = TH.amber; ctx.lineWidth = 2;
+  const a = SP(Math.max(pmin, q.p - q.dp)), b = SP(Math.min(pmax, q.p + q.dp));
+  ctx.beginPath(); ctx.moveTo(a, cy2 - amp2 * 0.62); ctx.lineTo(b, cy2 - amp2 * 0.62); ctx.stroke();
+  [a, b].forEach(x => { ctx.beginPath(); ctx.moveTo(x, cy2 - amp2 * 0.67); ctx.lineTo(x, cy2 - amp2 * 0.57); ctx.stroke(); });
+  label(ctx, "Δp = " + sci(q.dp, 1), (a + b) / 2, cy2 - amp2 * 0.68, TH.amber, 10.5, "center");
+  label(ctx, "p medio = " + sci(q.p, 2) + " kg m/s", m, top2 + 4, TH.teal, 10);
+  /* riferimento p = 0: se la gaussiana lo supera, il verso del moto non e' definito */
+  if (pmin < 0) {
+    const z = SP(0);
+    ctx.strokeStyle = TH.no; ctx.lineWidth = 1.4; ctx.setLineDash([4, 4]);
+    ctx.beginPath(); ctx.moveTo(z, cy2); ctx.lineTo(z, top2 + 8); ctx.stroke(); ctx.setLineDash([]);
+    label(ctx, "p = 0: la particella può anche andare indietro", z + 6, top2 + 18, TH.no, 9.5);
+  }
+  label(ctx, "Δx · Δp = ħ/2 : stringere una distribuzione allarga l'altra", m, H - 12, TH.muted, 10);
+}
+function stepPSI(dt) { PS.t += dt; drawPS(); }
+
+/* ============================================================
+   8. LOOP DI ANIMAZIONE
+   Anima soltanto la simulazione del modulo aperto, e solo quando
+   la sua scheda "Simulazione" e' quella visibile.
+   ============================================================ */
+let lastT = performance.now();
+
+/* invocata a ogni cambio di modulo o di scheda */
+function paneMostrato(mod, pane) {
+  if (pane !== "sim") return;
+  /* i canvas nascosti hanno larghezza zero: vanno rimisurati all'apertura */
+  CANVASES.forEach(o => { if (o.cv.offsetParent !== null) fit(o); });
+  if (mod === "4") { dsMakeBuf(); dsRenderBuf(); }
+  redrawAll();
+}
+
+const STEP = { "1": stepPlanck, "2": stepPE, "3": stepCompton, "4": stepDS, "5": stepBO, "6": stepPSI };
+
 function loop(t) {
   const dt = Math.min(0.05, (t - lastT) / 1000);
   lastT = t;
-  if (visible === "sim" && !document.hidden) {
-    stepPE(dt); stepDS(dt); stepBO(dt);
+  if (!document.hidden && paneAttivo() === "sim") {
+    const f = STEP[modCorrente];
+    if (f) f(dt);
   }
   requestAnimationFrame(loop);
 }
@@ -2615,7 +3567,7 @@ requestAnimationFrame(loop);
    ============================================================ */
 const ESERCIZI = [
   {
-    t: "Energia di un fotone", stars: 1, unit: "eV", ans: 2.25, tol: 0.02,
+    mod: 1, t: "Energia di un fotone", stars: 1, unit: "eV", ans: 2.25, tol: 0.02,
     q: "Una lampada emette luce verde di lunghezza d'onda \\(\\lambda = 550\\) nm. Calcola l'energia di un singolo fotone di questa luce, espressa in elettronvolt.",
     hints: [
       "L'energia di un fotone dipende solo dalla frequenza, quindi dalla lunghezza d'onda: \\(E = hf = hc/\\lambda\\).",
@@ -2626,7 +3578,7 @@ const ESERCIZI = [
          "<p>In joule: \\(E = 2{,}25 \\cdot 1{,}60\\cdot10^{-19} = 3{,}61\\cdot10^{-19}\\) J. Nota quanto è piccola questa energia: per questo la granularità della luce non si nota nella vita quotidiana, dove una lampadina emette circa \\(10^{19}\\) fotoni al secondo.</p>"
   },
   {
-    t: "Livello energetico dell'idrogeno", stars: 1, unit: "eV", ans: -1.5117, tol: 0.02,
+    mod: 5, t: "Livello energetico dell'idrogeno", stars: 1, unit: "eV", ans: -1.5117, tol: 0.02,
     q: "Nel modello di Bohr, calcola l'energia dell'elettrone dell'atomo di idrogeno nel livello \\(n = 3\\). Attenzione al segno.",
     hints: [
       "La formula dei livelli dell'idrogeno è \\(E_n = -13{,}6\\ \\mathrm{eV}/n^2\\).",
@@ -2637,7 +3589,7 @@ const ESERCIZI = [
          "<p>Il segno negativo non è un dettaglio formale: dice che per liberare l'elettrone da \\(n=3\\) bisogna fornirgli 1,51 eV. Confronta con \\(E_1 = -13{,}6\\) eV: dal livello fondamentale servirebbero 13,6 eV, nove volte tanto.</p>"
   },
   {
-    t: "Frequenza di soglia", stars: 2, unit: "Hz", ans: 5.512e14, tol: 0.025,
+    mod: 2, t: "Frequenza di soglia", stars: 2, unit: "Hz", ans: 5.512e14, tol: 0.025,
     q: "Il sodio ha lavoro di estrazione \\(W = 2{,}28\\) eV. Determina la frequenza di soglia \\(f_0\\) per l'effetto fotoelettrico su una superficie di sodio.",
     hints: [
       "La soglia è la frequenza per cui l'energia del fotone basta esattamente a pagare il lavoro di estrazione, senza lasciare energia cinetica: \\(hf_0 = W\\).",
@@ -2648,7 +3600,7 @@ const ESERCIZI = [
          "<p>Verifica in lunghezza d'onda: \\(\\lambda_0 = c/f_0 = 544\\) nm, oppure direttamente \\(\\lambda_0 = 1240/2{,}28 = 544\\) nm. Luce di lunghezza d'onda maggiore (per esempio rossa, 650 nm) non estrae elettroni dal sodio, a qualunque intensità.</p>"
   },
   {
-    t: "Lunghezza d'onda di soglia", stars: 2, unit: "nm", ans: 263.8, tol: 0.025,
+    mod: 2, t: "Lunghezza d'onda di soglia", stars: 2, unit: "nm", ans: 263.8, tol: 0.025,
     q: "Il rame ha \\(W = 4{,}70\\) eV. Qual è la massima lunghezza d'onda della radiazione capace di estrarre elettroni dal rame?",
     hints: [
       "Massima lunghezza d'onda significa minima energia del fotone: siamo esattamente alla soglia, \\(hc/\\lambda_0 = W\\).",
@@ -2659,7 +3611,7 @@ const ESERCIZI = [
          "<p>Attenzione alla direzione della disuguaglianza: perché ci sia emissione serve \\(\\lambda \\le \\lambda_0\\), cioè lunghezza d'onda <em>minore</em> o uguale, perché energia maggiore. È l'errore più frequente su questo tipo di problema.</p>"
   },
   {
-    t: "Energia cinetica massima dei fotoelettroni", stars: 2, unit: "eV", ans: 0.96, tol: 0.04,
+    mod: 2, t: "Energia cinetica massima dei fotoelettroni", stars: 2, unit: "eV", ans: 0.96, tol: 0.04,
     q: "Una superficie di cesio (\\(W = 2{,}14\\) eV) è illuminata con luce violetta di \\(\\lambda = 400\\) nm. Calcola l'energia cinetica massima dei fotoelettroni emessi.",
     hints: [
       "Usa l'equazione di Einstein per l'effetto fotoelettrico: \\(K_{max} = hf - W\\).",
@@ -2671,7 +3623,7 @@ const ESERCIZI = [
          "<p>Si chiama energia cinetica <em>massima</em> perché gli elettroni più interni perdono energia negli urti prima di uscire: escono con energie comprese tra 0 e 0,96 eV. Solo quelli che sfuggono senza perdite raggiungono il massimo.</p>"
   },
   {
-    t: "Potenziale d'arresto", stars: 3, unit: "V", ans: 0.65, tol: 0.06,
+    mod: 2, t: "Potenziale d'arresto", stars: 3, unit: "V", ans: 0.65, tol: 0.06,
     q: "Radiazione ultravioletta di \\(\\lambda = 250\\) nm colpisce una lastra di zinco (\\(W = 4{,}31\\) eV). Calcola il potenziale d'arresto \\(V_a\\) necessario ad annullare la corrente fotoelettrica.",
     hints: [
       "Il potenziale d'arresto è la tensione inversa che ferma anche gli elettroni più veloci: \\(eV_a = K_{max}\\).",
@@ -2683,7 +3635,7 @@ const ESERCIZI = [
          "<p>Perché la coincidenza numerica? Perché per definizione 1 eV è l'energia acquistata da un elettrone in 1 V: \\(V_a = K_{max}/e\\), e dividendo un'energia in eV per la carica elementare si ottiene lo stesso numero in volt. Se raddoppiassi l'intensità della radiazione, \\(V_a\\) non cambierebbe: cambierebbe solo la corrente misurata prima della frenata.</p>"
   },
   {
-    t: "Riga spettrale di Balmer", stars: 3, unit: "nm", ans: 486.2, tol: 0.02,
+    mod: 5, t: "Riga spettrale di Balmer", stars: 3, unit: "nm", ans: 486.2, tol: 0.02,
     q: "Un atomo di idrogeno compie la transizione dal livello \\(n_i = 4\\) al livello \\(n_f = 2\\). Calcola la lunghezza d'onda del fotone emesso.",
     hints: [
       "Il terzo postulato di Bohr dà l'energia del fotone: \\(hf = E_i - E_f\\), con \\(E_n = -13{,}6/n^2\\) eV.",
@@ -2695,7 +3647,7 @@ const ESERCIZI = [
          "<p>È la riga H-\\(\\beta\\) della serie di Balmer, di colore ciano: la seconda riga visibile dell'idrogeno. Poiché \\(n_f = 2\\), la transizione appartiene alla serie di Balmer, l'unica che cade nel visibile. Le transizioni che finiscono in \\(n_f = 1\\) sono tutte ultraviolette.</p>"
   },
   {
-    t: "Lunghezza d'onda di de Broglie di un elettrone", stars: 3, unit: "nm", ans: 0.1669, tol: 0.03,
+    mod: 4, t: "Lunghezza d'onda di de Broglie di un elettrone", stars: 3, unit: "nm", ans: 0.1669, tol: 0.03,
     q: "Un elettrone, inizialmente fermo, viene accelerato da una differenza di potenziale di 54 V (è il valore usato da Davisson e Germer). Calcola la sua lunghezza d'onda di de Broglie in nanometri.",
     hints: [
       "L'energia cinetica acquistata è \\(K = eV\\); da questa ricava la quantità di moto con \\(K = p^2/(2m)\\), quindi \\(p = \\sqrt{2 m_e e V}\\).",
@@ -2707,7 +3659,7 @@ const ESERCIZI = [
          "<p>Con la formula rapida: \\(\\lambda = 1{,}226/\\sqrt{54} = 0{,}167\\) nm. Nota che \\(\\lambda\\) diminuisce al crescere di \\(V\\): elettroni più energetici hanno lunghezza d'onda più corta, quindi figure di diffrazione più fitte. È il principio del microscopio elettronico, che grazie a \\(\\lambda \\ll 400\\) nm risolve dettagli inaccessibili alla luce visibile.</p>"
   },
   {
-    t: "de Broglie per un oggetto macroscopico", stars: 3, unit: "m", ans: 1.143e-34, tol: 0.05,
+    mod: 4, t: "de Broglie per un oggetto macroscopico", stars: 3, unit: "m", ans: 1.143e-34, tol: 0.05,
     q: "Una palla da baseball di massa 0,145 kg viaggia a 40,0 m/s. Calcola la sua lunghezza d'onda di de Broglie in metri.",
     hints: [
       "La relazione di de Broglie vale per qualunque corpo, non solo per gli elettroni: \\(\\lambda = h/(mv)\\).",
@@ -2719,7 +3671,7 @@ const ESERCIZI = [
          "<p>Sono diciannove ordini di grandezza sotto le dimensioni di un protone: nessun ostacolo fisico può fare da fenditura per un'onda così. Il calcolo non dice che la palla \"non ha\" natura ondulatoria: dice che la sua lunghezza d'onda è talmente piccola da rendere ogni effetto ondulatorio non osservabile, in linea di principio e non solo in pratica. È questa la ragione per cui la meccanica classica funziona nel mondo macroscopico.</p>"
   },
   {
-    t: "Energia di ionizzazione da uno stato eccitato", stars: 4, unit: "eV", ans: 3.40, tol: 0.03,
+    mod: 5, t: "Energia di ionizzazione da uno stato eccitato", stars: 4, unit: "eV", ans: 3.40, tol: 0.03,
     q: "Un atomo di idrogeno si trova nel primo stato eccitato (\\(n = 2\\)). Quanta energia occorre fornirgli, al minimo, per ionizzarlo completamente?",
     hints: [
       "Ionizzare significa portare l'elettrone a energia zero, cioè libero e fermo, corrispondente a \\(n \\to \\infty\\).",
@@ -2731,7 +3683,7 @@ const ESERCIZI = [
          "<p>Il fotone corrispondente ha \\(\\lambda = 1240/3{,}40 = 365\\) nm, nell'ultravioletto vicino. Osservazione importante: qualunque fotone con energia <em>maggiore</em> di 3,40 eV ionizza l'atomo, e l'energia in eccesso diventa energia cinetica dell'elettrone libero. Per le transizioni tra livelli legati, invece, l'energia deve essere esatta. La differenza sta nel fatto che sopra 0 eV lo spettro è continuo: non esistono più vincoli di quantizzazione.</p>"
   },
   {
-    t: "Indeterminazione sulla velocità", stars: 4, unit: "m/s", ans: 1.158e6, tol: 0.06,
+    mod: 6, t: "Indeterminazione sulla velocità", stars: 4, unit: "m/s", ans: 1.158e6, tol: 0.06,
     q: "Un elettrone è confinato in una regione di dimensione \\(\\Delta x = 0{,}050\\) nm. Stima la minima indeterminazione sulla sua velocità, usando \\(\\Delta x \\, \\Delta p \\ge \\hbar/2\\).",
     hints: [
       "Ricava prima l'indeterminazione minima sulla quantità di moto: \\(\\Delta p = \\hbar/(2\\Delta x)\\), con \\(\\hbar = 1{,}055\\cdot10^{-34}\\) J·s.",
@@ -2743,7 +3695,7 @@ const ESERCIZI = [
          "<p>Più di un milione di metri al secondo, cioè circa lo 0,4% della velocità della luce: un'indeterminazione dello stesso ordine della velocità tipica dell'elettrone atomico. Non ha senso, in queste condizioni, parlare della \"velocità dell'elettrone\" come di un numero definito. Nota che questo non dipende dallo strumento: è il valore minimo compatibile con il fatto stesso di essere confinato in quella regione.</p>"
   },
   {
-    t: "Quanti fotoni emette un laser", stars: 5, unit: "fotoni/s", ans: 1.636e16, tol: 0.05,
+    mod: 1, t: "Quanti fotoni emette un laser", stars: 5, unit: "fotoni/s", ans: 1.636e16, tol: 0.05,
     q: "Un puntatore laser rosso emette una potenza di 5,0 mW alla lunghezza d'onda di 650 nm. Quanti fotoni emette ogni secondo?",
     hints: [
       "La potenza è energia al secondo. Se ogni fotone porta un'energia \\(E\\), il numero al secondo è \\(N = P/E\\).",
@@ -2753,6 +3705,98 @@ const ESERCIZI = [
     sol: "\\[ E = \\frac{1240}{650} = 1{,}91\\ \\mathrm{eV} = 1{,}91 \\cdot 1{,}60\\cdot10^{-19} = 3{,}06\\cdot10^{-19}\\ \\mathrm{J} \\]" +
          "\\[ N = \\frac{P}{E} = \\frac{5{,}0\\cdot10^{-3}}{3{,}06\\cdot10^{-19}} = 1{,}6\\cdot10^{16}\\ \\text{fotoni/s} \\]" +
          "<p>Sedici milioni di miliardi di fotoni al secondo da un laser che consideriamo debolissimo. Questo numero enorme è la ragione per cui percepiamo la luce come un flusso continuo e non come una grandine di pacchetti: la granularità c'è, ma la scala di conteggio la rende invisibile. Negli esperimenti \"un fotone alla volta\" si scende a \\(10^{3}\\)–\\(10^{4}\\) fotoni al secondo, e a quel punto la struttura discreta diventa palese.</p>"
+  },
+  {
+    mod: 1, t: "Legge di Wien", stars: 2, unit: "K", ans: 8280, tol: 0.03,
+    q: "Lo spettro di una stella ha il massimo di emissione a \\(\\lambda_{max} = 350\\) nm. Stima la temperatura superficiale della stella, trattandola come un corpo nero.",
+    hints: [
+      "La legge dello spostamento di Wien lega il massimo alla temperatura: \\(\\lambda_{max} T = 2{,}90\\cdot10^{-3}\\ \\mathrm{m\\,K}\\).",
+      "Ricava \\(T = 2{,}90\\cdot10^{-3}/\\lambda_{max}\\), con \\(\\lambda_{max}\\) espressa in metri: \\(350\\ \\mathrm{nm} = 3{,}50\\cdot10^{-7}\\) m.",
+      "Il risultato è dell'ordine di alcune migliaia di kelvin. Per confronto, il Sole ha \\(\\lambda_{max} \\approx 500\\) nm e \\(T \\approx 5800\\) K: una stella con il massimo nell'ultravioletto è più calda."
+    ],
+    sol: "\\[ T = \\frac{2{,}90\\cdot10^{-3}\\ \\mathrm{m\\,K}}{3{,}50\\cdot10^{-7}\\ \\mathrm{m}} = 8{,}3\\cdot10^{3}\\ \\mathrm{K} \\]" +
+         "<p>Circa 8300 K, sensibilmente più calda del Sole. Nota la proporzionalità inversa: raddoppiare la temperatura dimezza \\(\\lambda_{max}\\). È il motivo per cui un metallo scaldato passa dal rosso all'arancione al bianco-azzurro, e non il contrario.</p>"
+  },
+  {
+    mod: 1, t: "Legge di Stefan-Boltzmann", stars: 3, unit: "volte", ans: 16, tol: 0.04,
+    q: "Un corpo nero viene portato da 300 K a 600 K. Di quante volte aumenta l'intensità totale che irradia?",
+    hints: [
+      "L'intensità totale irradiata segue \\(I = \\sigma T^4\\): dipende dalla quarta potenza della temperatura assoluta.",
+      "Il rapporto fra le due intensità è \\(I_2/I_1 = (T_2/T_1)^4\\). La costante \\(\\sigma\\) si semplifica.",
+      "\\(T_2/T_1 = 600/300 = 2\\). Resta da elevare alla quarta."
+    ],
+    sol: "\\[ \\frac{I_2}{I_1} = \\left(\\frac{T_2}{T_1}\\right)^4 = 2^4 = 16 \\]" +
+         "<p>Raddoppiando la temperatura assoluta l'emissione diventa sedici volte più intensa. Attenzione a due trappole: la temperatura va sempre in kelvin (con i gradi Celsius il rapporto sarebbe tutto sbagliato) e la crescita è in \\(T^4\\), non lineare. È la ragione per cui una piccola variazione di temperatura di una stella cambia enormemente la sua luminosità.</p>"
+  },
+  {
+    mod: 3, t: "Spostamento Compton a 90°", stars: 2, unit: "pm", ans: 2.43, tol: 0.03,
+    q: "Un fotone di raggi X viene diffuso da un elettrone con un angolo \\(\\theta = 90^\\circ\\). Calcola la variazione di lunghezza d'onda \\(\\Delta\\lambda\\).",
+    hints: [
+      "Usa la formula di Compton: \\(\\Delta\\lambda = \\dfrac{h}{m_e c}(1-\\cos\\theta)\\).",
+      "Il fattore \\(h/(m_ec)\\) è la lunghezza d'onda Compton dell'elettrone, \\(\\lambda_C = 2{,}43\\) pm.",
+      "Per \\(\\theta = 90^\\circ\\) si ha \\(\\cos\\theta = 0\\), quindi il fattore \\((1-\\cos\\theta)\\) vale esattamente 1."
+    ],
+    sol: "\\[ \\Delta\\lambda = \\lambda_C\\,(1-\\cos 90^\\circ) = 2{,}43\\ \\mathrm{pm} \\cdot 1 = 2{,}43\\ \\mathrm{pm} \\]" +
+         "<p>Nota che il risultato non dipende dalla lunghezza d'onda incidente: lo spostamento assoluto è sempre lo stesso a parità di angolo. Cambia invece l'effetto relativo \\(\\Delta\\lambda/\\lambda\\), che è grande per i raggi X (\\(\\lambda \\sim 10\\) pm) e trascurabile per la luce visibile (\\(\\lambda \\sim 5\\cdot10^5\\) pm).</p>"
+  },
+  {
+    mod: 3, t: "Energia ceduta all'elettrone", stars: 4, unit: "keV", ans: 13.4, tol: 0.06,
+    q: "Un fotone di lunghezza d'onda \\(\\lambda = 20{,}0\\) pm viene retrodiffuso (\\(\\theta = 180^\\circ\\)) da un elettrone in quiete. Quanta energia acquista l'elettrone?",
+    hints: [
+      "L'energia dell'elettrone è la differenza fra energia del fotone prima e dopo: \\(K_e = E - E' = hc/\\lambda - hc/\\lambda'\\).",
+      "Calcola prima \\(\\Delta\\lambda = \\lambda_C(1-\\cos 180^\\circ) = 2\\lambda_C = 4{,}85\\) pm, quindi \\(\\lambda' = 24{,}9\\) pm.",
+      "Con \\(hc = 1240\\) eV·nm = \\(1{,}24\\cdot10^{6}\\) eV·pm, si ha \\(E = 1{,}24\\cdot10^{6}/20{,}0\\) eV e \\(E' = 1{,}24\\cdot10^{6}/24{,}9\\) eV."
+    ],
+    sol: "\\[ \\Delta\\lambda = 2\\lambda_C = 4{,}85\\ \\mathrm{pm} \\quad\\Rightarrow\\quad \\lambda' = 24{,}9\\ \\mathrm{pm} \\]" +
+         "\\[ E = \\frac{1{,}24\\cdot10^{6}}{20{,}0} = 62{,}0\\ \\mathrm{keV}, \\qquad E' = \\frac{1{,}24\\cdot10^{6}}{24{,}9} = 49{,}8\\ \\mathrm{keV} \\]" +
+         "\\[ K_e = E - E' = 12{,}2\\ \\mathrm{keV} \\approx 13\\ \\mathrm{keV} \\]" +
+         "<p>Circa il 20% dell'energia del fotone passa all'elettrone: la retrodiffusione è la configurazione di massimo trasferimento. Con luce visibile lo stesso conto darebbe una frazione dell'ordine di \\(10^{-5}\\), del tutto irrilevabile.</p>"
+  },
+  {
+    mod: 3, t: "Dall'angolo alla deviazione", stars: 4, unit: "gradi", ans: 60, tol: 0.06,
+    q: "In un esperimento si misura uno spostamento Compton \\(\\Delta\\lambda = 1{,}21\\) pm. A quale angolo di diffusione è stato osservato il fotone?",
+    hints: [
+      "Parti da \\(\\Delta\\lambda = \\lambda_C(1-\\cos\\theta)\\) e ricava \\(\\cos\\theta = 1 - \\Delta\\lambda/\\lambda_C\\).",
+      "Con \\(\\lambda_C = 2{,}43\\) pm si ottiene \\(\\Delta\\lambda/\\lambda_C = 1{,}21/2{,}43 = 0{,}50\\).",
+      "Quindi \\(\\cos\\theta = 0{,}50\\): cerca l'angolo il cui coseno vale un mezzo."
+    ],
+    sol: "\\[ \\cos\\theta = 1 - \\frac{\\Delta\\lambda}{\\lambda_C} = 1 - \\frac{1{,}21}{2{,}43} = 0{,}50 \\quad\\Rightarrow\\quad \\theta = 60^\\circ \\]" +
+         "<p>La misura dell'angolo determina univocamente lo spostamento, e viceversa: è proprio questa corrispondenza rigida, verificata punto per punto da Compton, a rendere l'esperimento una prova della natura corpuscolare della radiazione. Un'onda classica non avrebbe alcuno spostamento a nessun angolo.</p>"
+  },
+  {
+    mod: 4, t: "Progettare un fascio di elettroni", stars: 4, unit: "V", ans: 601, tol: 0.05,
+    q: "Si vuole ottenere un fascio di elettroni con lunghezza d'onda di de Broglie \\(\\lambda = 0{,}0500\\) nm, adatto a studiare un cristallo. Quale differenza di potenziale accelerante occorre?",
+    hints: [
+      "Parti dalla relazione già combinata \\(\\lambda = 1{,}226/\\sqrt{V}\\) nm, valida in regime non relativistico.",
+      "Va invertita rispetto a \\(V\\): \\(\\sqrt{V} = 1{,}226/\\lambda\\), quindi \\(V = (1{,}226/\\lambda)^2\\) con \\(\\lambda\\) in nanometri.",
+      "\\(1{,}226/0{,}0500 = 24{,}5\\). Resta da elevare al quadrato."
+    ],
+    sol: "\\[ V = \\left(\\frac{1{,}226}{\\lambda[\\mathrm{nm}]}\\right)^2 = \\left(\\frac{1{,}226}{0{,}0500}\\right)^2 = (24{,}5)^2 \\approx 6{,}0\\cdot10^{2}\\ \\mathrm{V} \\]" +
+         "<p>Circa 600 V. Nota la dipendenza: per dimezzare la lunghezza d'onda serve un potenziale quattro volte maggiore, perché \\(\\lambda \\propto 1/\\sqrt{V}\\). È il compromesso di fondo del microscopio elettronico: risoluzione migliore richiede tensioni molto più alte, e oltre un certo punto occorre la trattazione relativistica.</p>"
+  },
+  {
+    mod: 6, t: "Larghezza naturale di una riga", stars: 4, unit: "eV", ans: 1.646e-7, tol: 0.07,
+    q: "Uno stato atomico eccitato ha vita media \\(\\Delta t = 2{,}0\\cdot10^{-9}\\) s. Calcola la minima indeterminazione sulla sua energia, espressa in elettronvolt.",
+    hints: [
+      "Usa la relazione energia-tempo: \\(\\Delta E \\ge \\hbar/(2\\Delta t)\\), con \\(\\hbar = 1{,}055\\cdot10^{-34}\\) J·s.",
+      "Il risultato esce in joule: per convertirlo in elettronvolt dividi per \\(1{,}602\\cdot10^{-19}\\).",
+      "Aspettati un valore dell'ordine di \\(10^{-7}\\) eV: piccolissimo rispetto alle energie di transizione (qualche eV), ma misurabile come larghezza della riga spettrale."
+    ],
+    sol: "\\[ \\Delta E \\ge \\frac{\\hbar}{2\\Delta t} = \\frac{1{,}055\\cdot10^{-34}}{2\\cdot 2{,}0\\cdot10^{-9}} = 2{,}64\\cdot10^{-26}\\ \\mathrm{J} \\]" +
+         "\\[ \\Delta E = \\frac{2{,}64\\cdot10^{-26}}{1{,}602\\cdot10^{-19}} = 1{,}6\\cdot10^{-7}\\ \\mathrm{eV} \\]" +
+         "<p>Questa è la <em>larghezza naturale</em> della riga emessa da quello stato, e si misura davvero con spettroscopi ad alta risoluzione. Il legame è inverso: stati a vita breve danno righe larghe, stati a vita lunga righe strette. Uno stato perfettamente stabile avrebbe energia perfettamente definita — ed è il caso dello stato fondamentale, che infatti non decade.</p>"
+  },
+  {
+    mod: 6, t: "Un protone dentro il nucleo", stars: 5, unit: "m/s", ans: 6.31e6, tol: 0.08,
+    q: "Un protone (\\(m_p = 1{,}673\\cdot10^{-27}\\) kg) è confinato in un nucleo di dimensione \\(\\Delta x = 5{,}0\\) fm \\(= 5{,}0\\cdot10^{-15}\\) m. Stima l'indeterminazione minima sulla sua velocità.",
+    hints: [
+      "Il procedimento è lo stesso dell'elettrone nell'atomo: prima \\(\\Delta p = \\hbar/(2\\Delta x)\\), poi \\(\\Delta v = \\Delta p/m\\).",
+      "Attenzione alla massa: qui non è quella dell'elettrone ma quella del protone, quasi duemila volte maggiore.",
+      "\\(\\Delta p = 1{,}055\\cdot10^{-34}/(2\\cdot5{,}0\\cdot10^{-15}) \\approx 1{,}06\\cdot10^{-20}\\) kg·m/s. Dividi per \\(m_p\\)."
+    ],
+    sol: "\\[ \\Delta p = \\frac{\\hbar}{2\\Delta x} = \\frac{1{,}055\\cdot10^{-34}}{1{,}0\\cdot10^{-14}} = 1{,}06\\cdot10^{-20}\\ \\mathrm{kg\\,m/s} \\]" +
+         "\\[ \\Delta v = \\frac{\\Delta p}{m_p} = \\frac{1{,}06\\cdot10^{-20}}{1{,}673\\cdot10^{-27}} \\approx 6{,}3\\cdot10^{6}\\ \\mathrm{m/s} \\]" +
+         "<p>Circa il 2% della velocità della luce, per un confinamento in una regione centomila volte più piccola dell'atomo. Il confronto con l'elettrone atomico (\\(\\Delta x \\approx 0{,}1\\) nm, \\(\\Delta v \\approx 6\\cdot10^{5}\\) m/s) mostra il meccanismo generale: quanto più stretta è la scatola, tanto più violento è il moto che la meccanica quantistica impone. È il motivo per cui le energie in gioco nel nucleo sono milioni di volte maggiori di quelle atomiche.</p>"
   }
 ];
 
@@ -2769,29 +3813,54 @@ function parseNum(s) {
 
 const exSolved = new Array(ESERCIZI.length).fill(false);
 
+/* gli esercizi vengono distribuiti nei moduli in base al campo mod,
+   ordinati per difficolta' crescente all'interno di ciascun modulo   */
 function buildEsercizi() {
-  const host = $("#exlist");
-  if (!host) return;
-  host.innerHTML = ESERCIZI.map((e, i) => {
-    const stars = "★".repeat(e.stars) + "☆".repeat(5 - e.stars);
-    return '<div class="exbox" data-i="' + i + '">' +
-      '<div class="exhd"><span class="n">' + (i + 1) + '</span><span class="t">' + e.t + '</span>' +
-      '<span class="stars" title="difficolt\u00e0">' + stars + '</span></div>' +
-      '<div class="exbody">' +
-        '<p>' + e.q + '</p>' +
-        '<div class="ansrow">' +
-          '<div class="fld"><input type="text" placeholder="risultato" aria-label="Risposta esercizio ' + (i + 1) + '">' +
-          '<span class="unit">' + e.unit + '</span></div>' +
-          '<button class="act" type="button" data-act="check">Verifica</button>' +
-          '<button class="ghost" type="button" data-act="hint">Aiuto</button>' +
-          '<button class="ghost" type="button" data-act="sol">Soluzione</button>' +
-        '</div>' +
-        '<div class="hints"></div><div class="fbslot"></div><div class="solslot"></div>' +
-      '</div></div>';
-  }).join("");
+  $$(".exlist").forEach(host => {
+    const mod = +host.getAttribute("data-mod");
+    const idx = ESERCIZI.map((e, i) => i).filter(i => ESERCIZI[i].mod === mod)
+      .sort((x, y) => ESERCIZI[x].stars - ESERCIZI[y].stars);
+    host.innerHTML = idx.map((i, pos) => {
+      const e = ESERCIZI[i];
+      const stars = "★".repeat(e.stars) + "☆".repeat(5 - e.stars);
+      return '<div class="exbox" data-i="' + i + '">' +
+        '<div class="exhd"><span class="n">' + (pos + 1) + '</span><span class="t">' + e.t + '</span>' +
+        '<span class="stars" title="difficoltà">' + stars + '</span></div>' +
+        '<div class="exbody">' +
+          '<p>' + e.q + '</p>' +
+          '<div class="ansrow">' +
+            '<div class="fld"><input type="text" placeholder="risultato" aria-label="Risposta esercizio ' + (pos + 1) + '">' +
+            '<span class="unit">' + e.unit + '</span></div>' +
+            '<button class="act" type="button" data-act="check">Verifica</button>' +
+            '<button class="ghost" type="button" data-act="hint">Aiuto</button>' +
+            '<button class="ghost" type="button" data-act="sol">Soluzione</button>' +
+          '</div>' +
+          '<div class="hints"></div><div class="fbslot"></div><div class="solslot"></div>' +
+        '</div></div>';
+    }).join("");
 
-  host.addEventListener("click", ev => {
-    const btn = ev.target.closest("[data-act]");
+    /* indicazione di metodo, identica in ogni modulo: scritta una volta qui */
+    const pane = host.closest(".pane");
+    if (pane && !$(".exmethod", pane)) {
+      const c = document.createElement("div");
+      c.className = "callout exmethod";
+      c.innerHTML = '<span class="lab">Metodo</span><p style="margin-bottom:0">Prova prima da solo, con carta e penna. ' +
+        'Se ti blocchi apri gli <b>aiuti</b> uno alla volta: sono scritti per rimetterti in moto senza darti il risultato. ' +
+        'Scrivi la risposta con la virgola decimale (per esempio 2,25) oppure in notazione esponenziale (1,6e16); ' +
+        "la verifica accetta un piccolo margine di arrotondamento e, quando sbagli, prova a dirti <em>dove</em> si è rotto il conto. " +
+        'La <b>soluzione</b> completa resta a disposizione, ma leggila dopo aver tentato.</p>';
+      pane.insertBefore(c, pane.firstChild);
+    }
+
+    const tot = document.querySelector('.ex-tot[data-mod="' + mod + '"]');
+    if (tot) tot.textContent = idx.length;
+    const cnt = document.querySelector('[data-extot="' + mod + '"]');
+    if (cnt) cnt.textContent = "(" + idx.length + ")";
+    typeset(host);
+  });
+
+  document.addEventListener("click", ev => {
+    const btn = ev.target.closest(".exlist [data-act]");
     if (!btn) return;
     const box = btn.closest(".exbox");
     const i = +box.getAttribute("data-i");
@@ -2833,15 +3902,15 @@ function buildEsercizi() {
         if (!exSolved[i]) { exSolved[i] = true; updateExCount(); }
       } else {
         const ratios = [
-          [1e9, "sembra un problema di unit\u00e0: metri al posto di nanometri, o viceversa."],
-          [1e-9, "sembra un problema di unit\u00e0: nanometri al posto di metri, o viceversa."],
-          [1e3, "il valore \u00e8 mille volte troppo grande: probabilmente hai confuso un prefisso metrico (nm, pm, \u00b5m) o un fattore \\(10^3\\)."],
-          [1e-3, "il valore \u00e8 mille volte troppo piccolo: probabilmente hai confuso un prefisso metrico o un fattore \\(10^3\\)."],
-          [1e6, "il valore \u00e8 un milione di volte troppo grande: controlla le potenze di dieci di tutti i dati."],
-          [1e-6, "il valore \u00e8 un milione di volte troppo piccolo: controlla le potenze di dieci di tutti i dati."],
+          [1e9, "sembra un problema di unità: metri al posto di nanometri, o viceversa."],
+          [1e-9, "sembra un problema di unità: nanometri al posto di metri, o viceversa."],
+          [1e3, "il valore è mille volte troppo grande: probabilmente hai confuso un prefisso metrico (nm, pm, µm) o un fattore \\(10^3\\)."],
+          [1e-3, "il valore è mille volte troppo piccolo: probabilmente hai confuso un prefisso metrico o un fattore \\(10^3\\)."],
+          [1e6, "il valore è un milione di volte troppo grande: controlla le potenze di dieci di tutti i dati."],
+          [1e-6, "il valore è un milione di volte troppo piccolo: controlla le potenze di dieci di tutti i dati."],
           [1.602e-19, "hai espresso in joule un risultato che va dato in elettronvolt."],
           [1 / 1.602e-19, "hai espresso in elettronvolt un risultato che va dato in joule."],
-          [-1, "il valore assoluto \u00e8 giusto, il segno no: rivedi la convenzione sugli stati legati."],
+          [-1, "il valore assoluto è giusto, il segno no: rivedi la convenzione sugli stati legati."],
           [2, "hai un fattore 2 di troppo: controlla se hai usato \\(\\hbar/2\\) o \\(\\hbar\\), oppure \\(n\\) al posto di \\(n^2\\)."],
           [0.5, "ti manca un fattore 2: controlla il denominatore della relazione di indeterminazione."]
         ];
@@ -2850,28 +3919,31 @@ function buildEsercizi() {
           if (!diag && Math.abs(v / e.ans - r[0]) / Math.abs(r[0]) < 0.05) diag = r[1];
         });
         if (!diag && Math.abs(v / e.ans - 1) < 0.12) diag = "sei molto vicino: probabilmente hai arrotondato troppo presto un passaggio intermedio.";
-        const msg = "Non torna. " + (diag ? "Un'ipotesi su dove si \u00e8 rotto il conto: " + diag
-          : "Usa gli aiuti: nella maggior parte dei casi l'errore \u00e8 nella conversione delle unit\u00e0 oppure nell'uso di \\(n\\) invece di \\(n^2\\).");
+        const msg = "Non torna. " + (diag ? "Un'ipotesi su dove si è rotto il conto: " + diag
+          : "Usa gli aiuti: nella maggior parte dei casi l'errore è nella conversione delle unità oppure nell'uso di \\(n\\) invece di \\(n^2\\).");
         fb.innerHTML = '<div class="fb no">' + msg + "</div>";
         typeset(fb);
       }
     }
   });
 
-  host.addEventListener("keydown", ev => {
-    if (ev.key === "Enter" && ev.target.matches("input")) {
+  document.addEventListener("keydown", ev => {
+    if (ev.key === "Enter" && ev.target.matches(".exlist input")) {
       ev.preventDefault();
       $('[data-act="check"]', ev.target.closest(".exbox")).click();
     }
   });
-  typeset(host);
+  updateExCount();
 }
 function fmtAns(v) {
   if (Math.abs(v) >= 1e4 || (Math.abs(v) < 1e-3 && v !== 0)) return sci(v, 3);
   return num(v, Math.abs(v) < 1 ? 3 : 2);
 }
 function updateExCount() {
-  $("#ex-count").textContent = exSolved.filter(Boolean).length;
+  $$(".ex-count").forEach(el => {
+    const mod = +el.getAttribute("data-mod");
+    el.textContent = ESERCIZI.filter((e, i) => e.mod === mod && exSolved[i]).length;
+  });
 }
 
 /* ============================================================
@@ -3051,6 +4123,7 @@ function makeQuiz(hostId, cfg) {
 const Q_TEORIA = {
   teoria: [
     {
+      m: 1,
       q: "In che cosa consiste la cosiddetta \"catastrofe ultravioletta\"?",
       opts: [
         "La previsione classica di un'intensità irradiata che cresce senza limite al diminuire della lunghezza d'onda, e quindi di un'energia totale infinita",
@@ -3066,6 +4139,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 1,
       q: "Che cosa ipotizza esattamente Planck nel 1900?",
       opts: [
         "Che gli oscillatori delle pareti della cavità possano scambiare energia solo in multipli interi di \\(hf\\)",
@@ -3081,6 +4155,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 2,
       q: "In un esperimento di effetto fotoelettrico si raddoppia l'intensità della luce mantenendo costante la frequenza. Che cosa succede?",
       opts: [
         "Raddoppia approssimativamente il numero di elettroni emessi, mentre l'energia cinetica massima resta invariata",
@@ -3096,6 +4171,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 2,
       q: "Illuminando una lastra di zinco (\\(W = 4{,}31\\) eV) con luce rossa molto intensa non si osserva alcuna emissione di elettroni. Perché?",
       opts: [
         "Perché ogni singolo fotone rosso ha energia inferiore a \\(W\\), e le energie di fotoni diversi non si sommano su un solo elettrone",
@@ -3111,6 +4187,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 3,
       q: "Perché l'effetto Compton è considerato una prova della natura corpuscolare della luce più stringente dell'effetto fotoelettrico?",
       opts: [
         "Perché la lunghezza d'onda della radiazione diffusa cambia in modo previsto solo trattando l'interazione come un urto con conservazione di energia e quantità di moto del fotone",
@@ -3126,6 +4203,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 4,
       q: "Secondo l'ipotesi di de Broglie, a una pallina da tennis in movimento è associata una lunghezza d'onda. Perché non ne osserviamo mai gli effetti?",
       opts: [
         "Perché \\(\\lambda = h/p\\) risulta dell'ordine di \\(10^{-34}\\) m, incommensurabilmente più piccola di qualsiasi ostacolo utilizzabile come fenditura",
@@ -3141,6 +4219,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 4,
       q: "Nell'esperimento della doppia fenditura con elettroni inviati uno alla volta, quale osservazione esclude definitivamente che ciascun elettrone si comporti come una pallina che passa da una fenditura o dall'altra?",
       opts: [
         "L'esistenza di punti dello schermo che ricevono elettroni quando è aperta una sola fenditura e non ne ricevono più quando sono aperte entrambe",
@@ -3156,6 +4235,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 5,
       q: "Perché il modello planetario di Rutherford è insostenibile secondo la fisica classica?",
       opts: [
         "Perché l'elettrone in orbita è una carica accelerata, quindi dovrebbe irradiare energia e collassare sul nucleo in circa \\(10^{-11}\\) s, emettendo uno spettro continuo",
@@ -3171,6 +4251,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 5,
       q: "Quale elemento del modello di Bohr è stato conservato dalla meccanica quantistica successiva e quale è stato abbandonato?",
       opts: [
         "Conservata la quantizzazione dei livelli energetici e la relazione \\(hf = E_i - E_f\\); abbandonata l'idea di orbite definite, sostituite dagli orbitali come distribuzioni di probabilità",
@@ -3186,6 +4267,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 6,
       q: "Quale affermazione descrive correttamente il principio di indeterminazione di Heisenberg?",
       opts: [
         "Non esiste alcuno stato in cui posizione e quantità di moto abbiano entrambe valori definiti con precisione arbitraria: è un limite intrinseco, indipendente dallo strumento",
@@ -3203,6 +4285,7 @@ const Q_TEORIA = {
   ],
   problemi: [
     {
+      m: 1,
       q: "Calcola l'energia di un fotone di lunghezza d'onda \\(\\lambda = 620\\) nm.",
       opts: ["2,0 eV", "0,50 eV", "5,0 eV", "12,4 eV"], c: 0,
       why: "\\(E = 1240/620 = 2{,}0\\) eV. È un valore tipico della luce visibile, che va da circa 1,6 eV (rosso lontano) a 3,3 eV (violetto).",
@@ -3213,6 +4296,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 2,
       q: "Luce di \\(\\lambda = 300\\) nm colpisce una superficie di calcio con \\(W = 2{,}87\\) eV. Quanto vale l'energia cinetica massima dei fotoelettroni?",
       opts: ["1,26 eV", "4,13 eV", "7,00 eV", "Nessuna emissione: la lunghezza d'onda è troppo grande"], c: 0,
       why: "\\(E = 1240/300 = 4{,}13\\) eV, quindi \\(K_{max} = 4{,}13 - 2{,}87 = 1{,}26\\) eV. La soglia del calcio è \\(\\lambda_0 = 1240/2{,}87 = 432\\) nm, e 300 nm è ben sotto: l'emissione avviene.",
@@ -3223,6 +4307,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 5,
       q: "Un atomo di idrogeno passa dal livello \\(n = 3\\) al livello \\(n = 1\\). Quanto vale la lunghezza d'onda del fotone emesso?",
       opts: ["103 nm", "656 nm", "410 nm", "1240 nm"], c: 0,
       why: "\\(E_3 = -1{,}51\\) eV, \\(E_1 = -13{,}6\\) eV, quindi \\(\\Delta E = 12{,}09\\) eV e \\(\\lambda = 1240/12{,}09 = 103\\) nm. Appartiene alla serie di Lyman (\\(n_f = 1\\)) e cade nell'ultravioletto: invisibile a occhio.",
@@ -3233,6 +4318,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 4,
       q: "Un elettrone viene accelerato da fermo attraverso una differenza di potenziale di 100 V. Quanto vale la sua lunghezza d'onda di de Broglie?",
       opts: ["0,123 nm", "1,23 nm", "12,3 nm", "0,0123 nm"], c: 0,
       why: "Con \\(\\lambda = 1{,}226/\\sqrt{V}\\) nm si ottiene \\(1{,}226/10 = 0{,}123\\) nm. È dell'ordine delle distanze interatomiche: per questo gli elettroni a queste energie diffrangono sui cristalli.",
@@ -3243,6 +4329,7 @@ const Q_TEORIA = {
       }
     },
     {
+      m: 3,
       q: "Nell'effetto Compton, quanto vale la variazione di lunghezza d'onda per un fotone retrodiffuso a \\(\\theta = 180^\\circ\\) da un elettrone?",
       opts: ["4,85 pm", "2,43 pm", "0 pm", "1,21 pm"], c: 0,
       why: "\\(\\Delta\\lambda = \\lambda_C(1-\\cos 180^\\circ) = \\lambda_C \\cdot 2 = 2 \\cdot 2{,}43 = 4{,}85\\) pm. È lo spostamento massimo possibile, coerente con il fatto che nella retrodiffusione il fotone cede la massima energia.",
@@ -3258,6 +4345,7 @@ const Q_TEORIA = {
 const Q_SIM = {
   teoria: [
     {
+      m: 2,
       q: "Nella simulazione dell'effetto fotoelettrico, muovendo solo il cursore dell'intensità luminosa, che cosa si osserva?",
       opts: [
         "Cambia il numero di pacchetti d'onda e la corrente rilevata, mentre \\(K_{max}\\) resta identica",
@@ -3273,6 +4361,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 2,
       q: "Nella simulazione si imposta \\(\\lambda = 700\\) nm, intensità 100%, catodo di zinco (\\(W = 4{,}31\\) eV). Che cosa mostra il pannello?",
       opts: [
         "Nessuna emissione: i pacchetti vengono assorbiti ma nessun elettrone esce, e la corrente resta nulla",
@@ -3288,6 +4377,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 2,
       q: "Nel grafico \\(K_{max}(f)\\) della simulazione, cambiando il materiale del catodo la retta si sposta ma resta parallela. Che cosa significa?",
       opts: [
         "Che la pendenza vale \\(h\\), costante universale, mentre l'intercetta dipende dal lavoro di estrazione del materiale",
@@ -3303,6 +4393,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 2,
       q: "A che cosa serve, fisicamente, il cursore della \"tensione frenante\" nella simulazione?",
       opts: [
         "A misurare \\(K_{max}\\): il valore di tensione che azzera la corrente è numericamente uguale a \\(K_{max}\\) in eV",
@@ -3318,6 +4409,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 4,
       q: "Nella simulazione della doppia fenditura, che cosa si vede sullo schermo dopo i primi cinquanta elettroni?",
       opts: [
         "Punti isolati in posizioni apparentemente casuali, senza struttura riconoscibile",
@@ -3333,6 +4425,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 4,
       q: "Passando da due fenditure a una nella simulazione, che cosa cambia nella figura accumulata?",
       opts: [
         "Le frange scompaiono e resta un'unica larga distribuzione di diffrazione, con elettroni anche dove prima c'erano frange scure",
@@ -3348,6 +4441,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 4,
       q: "Attivando il rivelatore di percorso con entrambe le fenditure aperte, la simulazione mostra la scomparsa delle frange. Come si interpreta questo risultato?",
       opts: [
         "Informazione sul cammino e figura di interferenza sono mutuamente esclusive: se il percorso è determinato, le ampiezze non si sovrappongono più",
@@ -3363,6 +4457,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 4,
       q: "Nella simulazione della doppia fenditura, aumentando l'energia degli elettroni che cosa accade alla figura?",
       opts: [
         "\\(\\lambda_{dB}\\) diminuisce, quindi le frange diventano più fitte",
@@ -3378,6 +4473,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 5,
       q: "Nella simulazione del modello di Bohr, perché nello spettro visibile compaiono righe solo per alcune transizioni?",
       opts: [
         "Perché solo le transizioni che terminano su \\(n = 2\\) (serie di Balmer) hanno \\(\\Delta E\\) corrispondente a lunghezze d'onda tra 380 e 780 nm",
@@ -3393,6 +4489,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 5,
       q: "Nella simulazione, per far salire l'elettrone da \\(n = 2\\) a \\(n = 3\\) è necessario un fotone. Quale?",
       opts: [
         "Uno con energia esattamente pari a \\(\\Delta E = 1{,}89\\) eV: né minore né maggiore",
@@ -3410,6 +4507,7 @@ const Q_SIM = {
   ],
   problemi: [
     {
+      m: 4,
       q: "Nella simulazione della doppia fenditura si imposta un'energia di 100 eV. Quanto vale la lunghezza d'onda di de Broglie mostrata nel pannello?",
       opts: ["0,123 nm", "0,0123 nm", "1,23 nm", "12,4 nm"], c: 0,
       why: "\\(\\lambda = 1{,}226/\\sqrt{100} = 0{,}123\\) nm. Con una distanza tra fenditure di 0,6 nm si ha \\(\\lambda/d \\approx 0{,}20\\), cioè alcune frange ben separate.",
@@ -3420,6 +4518,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 4,
       q: "Con \\(\\lambda_{dB} = 0{,}12\\) nm e distanza tra le fenditure \\(d = 0{,}60\\) nm, quanto vale \\(\\sin\\theta\\) per il primo massimo di interferenza?",
       opts: ["0,20", "0,50", "0,072", "5,0"], c: 0,
       why: "La condizione di massimo è \\(d\\sin\\theta = m\\lambda\\); per \\(m = 1\\), \\(\\sin\\theta = \\lambda/d = 0{,}12/0{,}60 = 0{,}20\\), cioè circa \\(11{,}5^\\circ\\). Le frange sono tanto più fitte quanto minore è \\(\\lambda/d\\).",
@@ -3430,6 +4529,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 2,
       q: "Nella simulazione dell'effetto fotoelettrico si imposta \\(\\lambda = 400\\) nm su un catodo di sodio (\\(W = 2{,}28\\) eV). Quale valore di \\(K_{max}\\) mostra il pannello?",
       opts: ["0,82 eV", "3,10 eV", "5,38 eV", "0 eV: siamo sotto soglia"], c: 0,
       why: "\\(E = 1240/400 = 3{,}10\\) eV, quindi \\(K_{max} = 3{,}10 - 2{,}28 = 0{,}82\\) eV. Il potenziale d'arresto corrispondente è 0,82 V: puoi verificarlo alzando il cursore della tensione frenante fino ad azzerare la corrente.",
@@ -3440,6 +4540,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 5,
       q: "Nella simulazione di Bohr si seleziona la transizione \\(3 \\to 2\\). Quale energia porta il fotone emesso, e di che colore appare?",
       opts: [
         "1,89 eV, rosso (656 nm)",
@@ -3455,6 +4556,7 @@ const Q_SIM = {
       }
     },
     {
+      m: 5,
       q: "Nel pannello della simulazione di Bohr, quale raggio orbitale corrisponde al livello \\(n = 4\\)? (\\(a_0 = 0{,}0529\\) nm)",
       opts: ["0,847 nm", "0,212 nm", "0,0132 nm", "4,00 nm"], c: 0,
       why: "\\(r_n = n^2 a_0 = 16 \\cdot 0{,}0529 = 0{,}847\\) nm. La crescita quadratica è la ragione per cui nella simulazione la scala radiale è compressa: con i raggi reali, \\(n=1\\) sarebbe 36 volte più piccolo di \\(n=6\\) e risulterebbe invisibile.",
@@ -3470,6 +4572,7 @@ const Q_SIM = {
 const Q_ESERC = {
   teoria: [
     {
+      m: 1,
       q: "Perché nei problemi conviene usare la costante nella forma \\(hc = 1240\\) eV·nm?",
       opts: [
         "Perché permette di passare direttamente da una lunghezza d'onda in nanometri a un'energia in elettronvolt, senza conversioni intermedie",
@@ -3485,6 +4588,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 2,
       q: "Nell'effetto fotoelettrico, perché il potenziale d'arresto espresso in volt ha lo stesso valore numerico di \\(K_{max}\\) espressa in elettronvolt?",
       opts: [
         "Perché \\(V_a = K_{max}/e\\) e per definizione 1 eV è l'energia acquistata da una carica elementare sotto 1 V",
@@ -3500,6 +4604,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 2,
       q: "Risolvendo un problema di effetto fotoelettrico si ottiene \\(K_{max} = -0{,}45\\) eV. Come si interpreta il risultato?",
       opts: [
         "Non c'è emissione: il fotone non ha energia sufficiente a pagare il lavoro di estrazione, e la formula va usata solo dove dà valori positivi",
@@ -3515,6 +4620,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 5,
       q: "Calcolando \\(E_n = -13{,}6\\ \\mathrm{eV}/n^2\\) per \\(n = 4\\), un errore ricorrente porta a \\(-3{,}40\\) eV. Quale?",
       opts: [
         "Aver diviso per \\(n\\) invece che per \\(n^2\\)",
@@ -3530,6 +4636,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 2,
       q: "La condizione per avere effetto fotoelettrico, scritta in termini di lunghezza d'onda, è:",
       opts: [
         "\\(\\lambda \\le \\lambda_0\\), con \\(\\lambda_0 = hc/W\\)",
@@ -3545,6 +4652,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 5,
       q: "Per ionizzare un atomo di idrogeno che si trova nel livello \\(n = 3\\) servono, al minimo:",
       opts: [
         "1,51 eV, cioè il modulo di \\(E_3\\)",
@@ -3560,6 +4668,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 6,
       q: "Applicando \\(\\Delta x \\, \\Delta p \\ge \\hbar/2\\), quali unità deve avere \\(\\Delta p\\) se \\(\\Delta x\\) è in metri e \\(\\hbar\\) in J·s?",
       opts: [
         "kg·m/s, perché J·s / m = kg·m/s",
@@ -3575,6 +4684,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 2,
       q: "Per calcolare quanti fotoni al secondo emette una sorgente di potenza \\(P\\) nota, quale conversione è indispensabile?",
       opts: [
         "Esprimere l'energia del singolo fotone in joule, perché la potenza in watt è J/s",
@@ -3590,6 +4700,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 4,
       q: "La formula rapida \\(\\lambda = 1{,}226/\\sqrt{V}\\) nm per la lunghezza d'onda di de Broglie di un elettrone accelerato:",
       opts: [
         "Vale solo in regime non relativistico, cioè per potenziali acceleranti molto minori di circa \\(5\\cdot10^{5}\\) V",
@@ -3605,6 +4716,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 4,
       q: "Un problema chiede la lunghezza d'onda di de Broglie di un oggetto macroscopico e il risultato viene \\(10^{-34}\\) m. Come va commentato?",
       opts: [
         "È corretto: la natura ondulatoria esiste ma è inosservabile, perché nessun ostacolo fisico ha dimensioni comparabili",
@@ -3622,6 +4734,7 @@ const Q_ESERC = {
   ],
   problemi: [
     {
+      m: 1,
       q: "Quanto vale l'energia di un fotone ultravioletto di \\(\\lambda = 100\\) nm?",
       opts: ["12,4 eV", "1,24 eV", "124 eV", "0,081 eV"], c: 0,
       why: "\\(E = 1240/100 = 12{,}4\\) eV. Per confronto, l'energia di ionizzazione dell'idrogeno è 13,6 eV: un fotone di 100 nm è quasi capace di ionizzare un atomo di idrogeno dallo stato fondamentale.",
@@ -3632,6 +4745,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 2,
       q: "Lo zinco ha \\(W = 4{,}31\\) eV. Quanto vale la sua frequenza di soglia?",
       opts: ["\\(1{,}04\\cdot10^{15}\\) Hz", "\\(1{,}04\\cdot10^{14}\\) Hz", "\\(2{,}88\\cdot10^{14}\\) Hz", "\\(4{,}31\\cdot10^{15}\\) Hz"], c: 0,
       why: "\\(f_0 = W/h = 4{,}31/(4{,}136\\cdot10^{-15}) = 1{,}04\\cdot10^{15}\\) Hz, corrispondente a \\(\\lambda_0 = 288\\) nm, nell'ultravioletto. Con luce visibile lo zinco non emette fotoelettroni.",
@@ -3642,6 +4756,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 4,
       q: "Un elettrone si muove a \\(1{,}0\\cdot10^{6}\\) m/s. Quanto vale la sua lunghezza d'onda di de Broglie?",
       opts: ["0,73 nm", "7,3 nm", "0,073 nm", "\\(1{,}4\\cdot10^{-9}\\) m"], c: 0,
       why: "\\(p = m_e v = 9{,}11\\cdot10^{-31} \\cdot 1{,}0\\cdot10^{6} = 9{,}11\\cdot10^{-25}\\) kg·m/s, quindi \\(\\lambda = 6{,}626\\cdot10^{-34}/9{,}11\\cdot10^{-25} = 7{,}3\\cdot10^{-10}\\) m = 0,73 nm.",
@@ -3652,6 +4767,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 5,
       q: "Calcola la lunghezza d'onda del fotone emesso nella transizione \\(5 \\to 2\\) dell'idrogeno.",
       opts: ["434 nm", "486 nm", "656 nm", "397 nm"], c: 0,
       why: "\\(E_5 = -13{,}6/25 = -0{,}544\\) eV, \\(E_2 = -3{,}40\\) eV, quindi \\(\\Delta E = 2{,}856\\) eV e \\(\\lambda = 1240/2{,}856 = 434\\) nm: è la riga H-\\(\\gamma\\), blu-violetta, terza riga visibile della serie di Balmer.",
@@ -3662,6 +4778,7 @@ const Q_ESERC = {
       }
     },
     {
+      m: 6,
       q: "Uno stato atomico eccitato ha vita media \\(\\Delta t = 1{,}0\\cdot10^{-8}\\) s. Quale è la minima indeterminazione sulla sua energia?",
       opts: [
         "\\(5{,}3\\cdot10^{-27}\\) J, cioè circa \\(3{,}3\\cdot10^{-8}\\) eV",
@@ -3678,6 +4795,296 @@ const Q_ESERC = {
     }
   ]
 };
+
+/* domande aggiuntive per i moduli che ne avevano poche:
+   corpo nero e Planck, effetto Compton, indeterminazione        */
+const Q_EXTRA = {
+  teoria: [
+    {
+      m: 1,
+      q: "Che cosa distingue un corpo nero da un oggetto qualunque che emette radiazione termica?",
+      opts: [
+        "Assorbe tutta la radiazione che lo colpisce, e il suo spettro di emissione dipende soltanto dalla temperatura",
+        "È un corpo di colore nero, che per questo non emette alcuna radiazione visibile",
+        "È un oggetto talmente denso che la luce non può uscirne, come un buco nero",
+        "Emette radiazione solo a una lunghezza d'onda ben definita, fissata dalla sua temperatura"
+      ], c: 0,
+      why: "Il corpo nero è un assorbitore perfetto: non riflette nulla, quindi tutto ciò che emette è radiazione termica propria. La conseguenza notevole è l'universalità dello spettro, che dipende solo da \\(T\\) e non dal materiale. In laboratorio si realizza con una cavità chiusa dotata di un piccolo foro.",
+      traps: {
+        1: "Il nome indica l'assorbimento perfetto, non il colore percepito. Un corpo nero a 5000 K è anzi luminosissimo: il Sole ne è una buona approssimazione.",
+        2: "Il buco nero è un oggetto astrofisico completamente diverso. Qui si parla di un modello termodinamico ideale.",
+        3: "L'emissione è continua e distribuita su tutte le lunghezze d'onda: ha un massimo, ma non è monocromatica."
+      }
+    },
+    {
+      m: 1,
+      q: "Un fornello elettrico passa dal rosso cupo all'arancione mentre si scalda. Quale legge descrive il fenomeno?",
+      opts: [
+        "La legge di Wien: al crescere di \\(T\\) il massimo di emissione si sposta verso lunghezze d'onda minori",
+        "La legge di Stefan-Boltzmann: al crescere di \\(T\\) l'intensità totale aumenta come \\(T^4\\)",
+        "La legge di Planck impone che a ogni temperatura corrisponda un unico colore emesso",
+        "L'effetto fotoelettrico: gli elettroni emessi dal metallo caldo producono la luce visibile"
+      ], c: 0,
+      why: "Il colore percepito dipende da dove cade il massimo dello spettro: \\(\\lambda_{max} = 2{,}90\\cdot10^{-3}/T\\). A 1000 K il massimo è nell'infrarosso e vediamo solo la coda rossa; salendo di temperatura il massimo si sposta verso il blu e la miscela percepita vira all'arancione, poi al bianco.",
+      traps: {
+        1: "Stefan-Boltzmann descrive quanta energia viene emessa in totale, cioè la luminosità, non il colore.",
+        2: "Lo spettro di Planck è continuo: a ogni temperatura il corpo emette a tutte le lunghezze d'onda, con un massimo. Il colore è la somma percepita, non una singola riga.",
+        3: "L'effetto fotoelettrico riguarda l'emissione di elettroni per assorbimento di luce, non l'emissione termica di radiazione."
+      }
+    },
+    {
+      m: 1,
+      q: "Perché la quantizzazione dell'energia non si nota nei fenomeni macroscopici?",
+      opts: [
+        "Perché \\(h\\) è dell'ordine di \\(10^{-34}\\) J·s, quindi i quanti sono così piccoli rispetto alle energie in gioco che la granularità è irrilevabile",
+        "Perché la quantizzazione vale solo dentro le cavità di corpo nero, non nel mondo esterno",
+        "Perché a scala macroscopica gli effetti quantistici si compensano statisticamente e si annullano",
+        "Perché la meccanica classica e la meccanica quantistica sono teorie alternative, e vale l'una oppure l'altra"
+      ], c: 0,
+      why: "Un oscillatore macroscopico scambia energie enormemente maggiori di \\(hf\\): i gradini esistono, ma sono così fitti da apparire un continuo. La fisica classica non è una teoria diversa che subentra a una certa scala, è il limite della descrizione quantistica quando \\(h\\) è trascurabile rispetto alle grandezze in gioco.",
+      traps: {
+        1: "La quantizzazione è una proprietà generale degli scambi di energia, non un fenomeno confinato a un apparato particolare.",
+        2: "Non c'è alcuna compensazione: i quanti restano, semplicemente sono indistinguibili da una variazione continua.",
+        3: "Non sono alternative in competizione: la meccanica classica è il caso limite della quantistica, e le due si raccordano con continuità."
+      }
+    },
+    {
+      m: 3,
+      q: "Nell'effetto Compton, che cosa succede alla lunghezza d'onda del fotone diffuso rispetto a quella incidente?",
+      opts: [
+        "Aumenta, perché il fotone cede energia all'elettrone e a energia minore corrisponde lunghezza d'onda maggiore",
+        "Diminuisce, perché l'urto con l'elettrone comprime l'onda associata al fotone",
+        "Resta invariata, perché il fotone viene solo deviato senza perdere energia",
+        "Aumenta o diminuisce a seconda che l'elettrone sia inizialmente fermo o in moto verso il fotone"
+      ], c: 0,
+      why: "Il fotone cede parte di energia e quantità di moto all'elettrone di rinculo. Da \\(E = hc/\\lambda\\) segue che meno energia significa lunghezza d'onda maggiore: \\(\\lambda' > \\lambda\\) sempre, per qualunque angolo diverso da zero.",
+      traps: {
+        1: "Una diminuzione significherebbe che il fotone guadagna energia, ma l'elettrone era fermo e non aveva energia da cedere.",
+        2: "È la previsione classica, ed è proprio quella che l'esperimento smentisce: la radiazione diffusa contiene una componente a lunghezza d'onda maggiore.",
+        3: "Nell'esperimento di Compton l'elettrone è considerato inizialmente in quiete, e lo spostamento risulta sempre positivo."
+      }
+    },
+    {
+      m: 3,
+      q: "Da che cosa dipende lo spostamento Compton \\(\\Delta\\lambda\\)?",
+      opts: [
+        "Solo dall'angolo di diffusione, attraverso il fattore \\((1-\\cos\\theta)\\)",
+        "Solo dalla lunghezza d'onda incidente: fotoni più energetici subiscono spostamenti maggiori",
+        "Dal materiale del bersaglio, perché ogni elemento ha una lunghezza d'onda Compton diversa",
+        "Dall'intensità del fascio di raggi X incidente"
+      ], c: 0,
+      why: "\\(\\Delta\\lambda = (h/m_ec)(1-\\cos\\theta)\\): l'unica variabile è l'angolo. La costante \\(h/(m_ec) = 2{,}43\\) pm dipende solo dalla massa dell'elettrone. Ciò che cambia con \\(\\lambda\\) è l'effetto <em>relativo</em> \\(\\Delta\\lambda/\\lambda\\), non lo spostamento assoluto.",
+      traps: {
+        1: "Lo spostamento assoluto è indipendente da \\(\\lambda\\). È la frazione \\(\\Delta\\lambda/\\lambda\\) a dipendere dalla lunghezza d'onda incidente, e per questo l'effetto è visibile con i raggi X.",
+        2: "La diffusione avviene sugli elettroni quasi liberi del bersaglio: entra in gioco la massa dell'elettrone, uguale in ogni materiale.",
+        3: "L'intensità determina quanti fotoni vengono diffusi, non come si comporta ciascuno."
+      }
+    },
+    {
+      m: 3,
+      q: "Quale grandezza attribuita al fotone rende conto quantitativamente dell'effetto Compton?",
+      opts: [
+        "La quantità di moto \\(p = h/\\lambda\\), che permette di trattare l'interazione come un urto con conservazione di \\(E\\) e \\(\\vec p\\)",
+        "La massa del fotone, che pur essendo piccolissima è diversa da zero",
+        "La carica elettrica del fotone, che interagisce con quella dell'elettrone",
+        "La frequenza di soglia del materiale bersaglio"
+      ], c: 0,
+      why: "Il conto torna imponendo le due conservazioni con \\(E = hf\\) e \\(p = h/\\lambda\\). L'esistenza di una quantità di moto per un oggetto di massa nulla è possibile perché il fotone viaggia a \\(c\\): vale \\(E = pc\\), caso limite della relazione relativistica energia-quantità di moto.",
+      traps: {
+        1: "Il fotone ha massa esattamente nulla. La quantità di moto non richiede massa quando la velocità è \\(c\\).",
+        2: "Il fotone è elettricamente neutro: l'interazione non è di tipo coulombiano fra cariche.",
+        3: "La frequenza di soglia riguarda l'effetto fotoelettrico e il legame degli elettroni nel metallo, non la cinematica dell'urto."
+      }
+    },
+    {
+      m: 3,
+      q: "Perché l'effetto Compton si osserva con i raggi X e non con la luce visibile?",
+      opts: [
+        "Perché \\(\\Delta\\lambda\\) è di pochi picometri: confrontabile con \\(\\lambda\\) per i raggi X, del tutto trascurabile rispetto ai 500 nm della luce visibile",
+        "Perché la luce visibile non ha quantità di moto, essendo poco energetica",
+        "Perché i fotoni visibili vengono riflessi anziché diffusi",
+        "Perché con la luce visibile l'elettrone rincula in direzione opposta e l'effetto si annulla"
+      ], c: 0,
+      why: "Lo spostamento assoluto è lo stesso, ma conta il rapporto: con \\(\\lambda = 10\\) pm uno spostamento di 2,4 pm è il 24%, misurabile senza difficoltà; con \\(\\lambda = 500\\) nm è cinque parti su un milione, sotto la sensibilità dell'esperimento.",
+      traps: {
+        1: "Ogni fotone ha quantità di moto \\(h/\\lambda\\), anche quello visibile: semplicemente è più piccola, e con essa l'effetto relativo.",
+        2: "La riflessione è un fenomeno collettivo su una superficie; qui si tratta di diffusione su singoli elettroni quasi liberi.",
+        3: "Il rinculo dell'elettrone avviene sempre in avanti, e non annulla nulla."
+      }
+    },
+    {
+      m: 3,
+      q: "Nell'urto Compton l'elettrone di rinculo parte sempre con un angolo \\(\\varphi < 90^\\circ\\) rispetto alla direzione del fotone incidente. Perché?",
+      opts: [
+        "Perché la componente di quantità di moto lungo la direzione iniziale deve conservarsi, e inizialmente è tutta in avanti",
+        "Perché l'elettrone è legato all'atomo e non può muoversi all'indietro",
+        "Perché il fotone lo spinge sempre esattamente nella propria direzione di arrivo",
+        "Non è vero: per \\(\\theta\\) piccoli l'elettrone rincula all'indietro"
+      ], c: 0,
+      why: "Prima dell'urto tutta la quantità di moto è del fotone e punta in avanti. Dopo l'urto la somma vettoriale di fotone diffuso ed elettrone deve dare lo stesso vettore: se il fotone devia da una parte, l'elettrone deve avere una componente in avanti che compensa, quindi \\(\\varphi\\) resta acuto.",
+      traps: {
+        1: "Nella trattazione l'elettrone è considerato libero e in quiete; il vincolo sull'angolo viene dalla conservazione, non dal legame atomico.",
+        2: "L'elettrone parte in avanti ma in generale non lungo la direzione del fotone incidente: l'angolo dipende da \\(\\theta\\).",
+        3: "Per \\(\\theta\\) piccoli l'elettrone parte quasi perpendicolarmente, con \\(\\varphi\\) prossimo a \\(90^\\circ\\), ma mai oltre."
+      }
+    },
+    {
+      m: 6,
+      q: "Perché il principio di indeterminazione garantisce che l'elettrone non cada sul nucleo?",
+      opts: [
+        "Perché confinarlo in una regione piccolissima imporrebbe un'enorme energia cinetica, e il minimo dell'energia totale cade a una distanza finita",
+        "Perché la forza di Coulomb si annulla a distanze molto piccole",
+        "Perché l'elettrone, essendo un'onda, non può avvicinarsi a meno di una lunghezza d'onda dal nucleo",
+        "Perché il nucleo respinge l'elettrone quando la distanza scende sotto il raggio di Bohr"
+      ], c: 0,
+      why: "C'è un compromesso: avvicinandosi al nucleo l'energia potenziale scende come \\(-1/r\\), ma \\(\\Delta x\\) piccolo impone \\(\\Delta p\\) grande, e l'energia cinetica cresce come \\(1/r^2\\). La somma ha un minimo, e cade proprio intorno al raggio di Bohr: la dimensione dell'atomo è una conseguenza dell'indeterminazione.",
+      traps: {
+        1: "La forza di Coulomb cresce al diminuire della distanza: da sola porterebbe al collasso.",
+        2: "Non esiste un divieto geometrico di questo tipo: la funzione d'onda dello stato fondamentale è diversa da zero anche sul nucleo. L'argomento corretto è energetico.",
+        3: "Nucleo ed elettrone hanno cariche opposte e si attraggono a ogni distanza."
+      }
+    },
+    {
+      m: 6,
+      q: "Che cosa rappresenta \\(|\\psi(x)|^2\\) per una particella quantistica?",
+      opts: [
+        "La densità di probabilità di trovare la particella in \\(x\\) quando si effettua una misura di posizione",
+        "La forma fisica della particella, che risulta quindi estesa nello spazio",
+        "La nostra ignoranza sulla posizione che la particella possiede comunque in ogni istante",
+        "L'energia posseduta dalla particella nel punto \\(x\\)"
+      ], c: 0,
+      why: "È l'interpretazione di Born: \\(\\psi\\) è un'ampiezza di probabilità e il suo modulo quadro dà la densità di probabilità degli esiti di una misura di posizione. Non è una densità di materia, e non è una descrizione della nostra ignoranza su un valore preesistente.",
+      traps: {
+        1: "La particella non è \"spalmata\": ogni misura la rivela in un punto, come mostra l'esperimento della doppia fenditura, dove ogni elettrone arriva localizzato.",
+        2: "È il fraintendimento classico. Se esistesse una posizione definita ma sconosciuta, l'interferenza della doppia fenditura non si spiegherebbe.",
+        3: "L'energia non è distribuita nello spazio in questo modo: \\(|\\psi|^2\\) ha le dimensioni di una densità di probabilità."
+      }
+    },
+    {
+      m: 6,
+      q: "Nella meccanica quantistica di Schrödinger, da dove viene la quantizzazione dell'energia?",
+      opts: [
+        "Dalle condizioni al contorno imposte alla funzione d'onda di una particella confinata, come per le onde stazionarie su una corda",
+        "Da un postulato aggiunto a mano, come nel modello di Bohr",
+        "Dal fatto che l'energia è sempre un multiplo intero di \\(h\\)",
+        "Dalla discretizzazione dello spazio a scale molto piccole"
+      ], c: 0,
+      why: "È il punto in cui Schrödinger supera Bohr: i livelli discreti non sono imposti, sono la conseguenza matematica del fatto che solo certe soluzioni si raccordano correttamente ai bordi. La stessa cosa accade per le frequenze possibili di una corda fissata agli estremi.",
+      traps: {
+        1: "In Bohr sì, ed è il suo limite. In Schrödinger la quantizzazione è un risultato, non un'ipotesi.",
+        2: "\\(h\\) ha le dimensioni di un'azione, non di un'energia; e i livelli dell'idrogeno vanno come \\(1/n^2\\), non come multipli interi di una quantità fissa.",
+        3: "Lo spazio nella meccanica quantistica ordinaria resta continuo: a essere discreti sono i livelli energetici degli stati legati."
+      }
+    },
+    {
+      m: 6,
+      q: "Che differenza c'è fra la probabilità del lancio di un dado e quella quantistica?",
+      opts: [
+        "Nel dado il risultato è già determinato dalle condizioni iniziali e la probabilità misura la nostra ignoranza; in quantistica non esiste un valore predeterminato prima della misura",
+        "Nessuna: in entrambi i casi la probabilità nasce dalla nostra incapacità di conoscere tutti i dettagli",
+        "La probabilità quantistica può superare 1, quella classica no",
+        "Nel dado le probabilità si sommano, in quantistica si moltiplicano"
+      ], c: 0,
+      why: "La differenza è verificabile sperimentalmente: se in quantistica esistesse un valore nascosto ma definito, con due fenditure aperte le probabilità si sommerebbero e non ci sarebbero frange. L'interferenza mostra che a sommarsi sono le ampiezze, e che il valore non è predeterminato.",
+      traps: {
+        1: "È il modello classico di probabilità come ignoranza, escluso dall'esperimento della doppia fenditura.",
+        2: "Le probabilità restano comprese fra 0 e 1 in entrambi i casi: sono le ampiezze, che possono essere negative o complesse, a comportarsi diversamente.",
+        3: "Il prodotto delle probabilità descrive eventi congiunti indipendenti, e non è ciò che distingue i due casi."
+      }
+    }
+  ],
+  problemi: [
+    {
+      m: 1,
+      q: "Il Sole ha una temperatura superficiale di circa 5800 K. A quale lunghezza d'onda cade il massimo della sua emissione?",
+      opts: ["500 nm", "290 nm", "1700 nm", "5800 nm"], c: 0,
+      why: "\\(\\lambda_{max} = 2{,}90\\cdot10^{-3}/5800 = 5{,}0\\cdot10^{-7}\\) m = 500 nm, nel verde-azzurro, cioè al centro della finestra visibile. Non è un caso che il nostro occhio sia più sensibile proprio lì.",
+      traps: {
+        1: "290 nm si otterrebbe con \\(T = 10^4\\) K: controlla la divisione.",
+        2: "1700 nm corrisponde a circa 1700 K, la temperatura di una fiamma, non della superficie solare.",
+        3: "Hai riportato il valore della temperatura con l'unità di una lunghezza d'onda: la legge di Wien richiede una divisione."
+      }
+    },
+    {
+      m: 1,
+      q: "Quanti fotoni di luce verde (\\(\\lambda = 550\\) nm) occorrono per fare 1,0 J di energia?",
+      opts: [
+        "\\(2{,}8\\cdot10^{18}\\)", "\\(2{,}3\\cdot10^{-19}\\)", "\\(4{,}4\\cdot10^{14}\\)", "\\(1{,}0\\cdot10^{19}\\)"
+      ], c: 0,
+      why: "Un fotone a 550 nm porta \\(E = 1240/550 = 2{,}25\\) eV \\(= 3{,}61\\cdot10^{-19}\\) J. Quindi \\(N = 1{,}0/3{,}61\\cdot10^{-19} = 2{,}8\\cdot10^{18}\\). Quasi tre miliardi di miliardi di quanti per un solo joule: ecco perché la granularità della luce è invisibile su scala ordinaria.",
+      traps: {
+        1: "È l'energia del singolo fotone in joule, non il loro numero: manca la divisione.",
+        2: "\\(4{,}4\\cdot10^{14}\\) Hz è la frequenza della luce a 550 nm, non un conteggio di fotoni.",
+        3: "Ordine di grandezza vicino ma sbagliato: rifai la divisione con \\(E = 3{,}61\\cdot10^{-19}\\) J."
+      }
+    },
+    {
+      m: 3,
+      q: "Un fotone di raggi X con \\(\\lambda = 5{,}00\\) pm viene diffuso a \\(60^\\circ\\). Quanto vale la lunghezza d'onda del fotone diffuso?",
+      opts: ["6,21 pm", "7,43 pm", "5,00 pm", "3,79 pm"], c: 0,
+      why: "\\(\\Delta\\lambda = 2{,}43(1-\\cos 60^\\circ) = 2{,}43 \\cdot 0{,}5 = 1{,}21\\) pm, quindi \\(\\lambda' = 5{,}00 + 1{,}21 = 6{,}21\\) pm. Qui lo spostamento è il 24% della lunghezza d'onda iniziale: un effetto imponente, ben misurabile.",
+      traps: {
+        1: "7,43 pm corrisponde a \\(\\theta = 180^\\circ\\), dove il fattore \\((1-\\cos\\theta)\\) vale 2.",
+        2: "Nessuno spostamento si ha solo per \\(\\theta = 0\\), cioè in assenza di deviazione.",
+        3: "Hai sottratto \\(\\Delta\\lambda\\) invece di sommarlo: il fotone perde energia, quindi la lunghezza d'onda aumenta."
+      }
+    },
+    {
+      m: 3,
+      q: "Quanto vale la quantità di moto di un fotone di lunghezza d'onda 10,0 pm?",
+      opts: [
+        "\\(6{,}63\\cdot10^{-23}\\) kg m/s", "\\(6{,}63\\cdot10^{-26}\\) kg m/s",
+        "\\(2{,}21\\cdot10^{-31}\\) kg m/s", "Zero, perché il fotone ha massa nulla"
+      ], c: 0,
+      why: "\\(p = h/\\lambda = 6{,}626\\cdot10^{-34}/1{,}00\\cdot10^{-11} = 6{,}63\\cdot10^{-23}\\) kg·m/s. La massa nulla non impedisce di avere quantità di moto: per una particella che viaggia a \\(c\\) vale \\(E = pc\\).",
+      traps: {
+        1: "Errore di tre ordini di grandezza: 10,0 pm sono \\(1{,}00\\cdot10^{-11}\\) m, non \\(10^{-8}\\).",
+        2: "Sembra il risultato di \\(h/c\\): la formula corretta è \\(h/\\lambda\\).",
+        3: "È l'errore concettuale più comune: massa nulla e quantità di moto nulla non sono la stessa cosa. L'effetto Compton misura direttamente questa quantità di moto."
+      }
+    },
+    {
+      m: 6,
+      q: "Un elettrone è confinato in una regione di 1,0 nm. Quanto vale la minima indeterminazione sulla sua quantità di moto?",
+      opts: [
+        "\\(5{,}3\\cdot10^{-26}\\) kg m/s", "\\(1{,}1\\cdot10^{-25}\\) kg m/s",
+        "\\(5{,}3\\cdot10^{-34}\\) kg m/s", "\\(1{,}1\\cdot10^{-43}\\) kg m/s"
+      ], c: 0,
+      why: "\\(\\Delta p = \\hbar/(2\\Delta x) = 1{,}055\\cdot10^{-34}/(2{,}0\\cdot10^{-9}) = 5{,}3\\cdot10^{-26}\\) kg·m/s. Dividendo per \\(m_e\\) si ottiene \\(\\Delta v \\approx 5{,}8\\cdot10^{4}\\) m/s: dieci volte meno che per un confinamento atomico di 0,1 nm, coerentemente con la proporzionalità inversa.",
+      traps: {
+        1: "Hai usato \\(\\hbar/\\Delta x\\) dimenticando il fattore 2 al denominatore.",
+        2: "Hai dimenticato di dividere per \\(\\Delta x\\): quello è circa il valore di \\(\\hbar\\).",
+        3: "Sembra il prodotto \\(\\hbar \\cdot \\Delta x\\) invece del rapporto."
+      }
+    },
+    {
+      m: 6,
+      q: "Per un pacchetto d'onda con \\(\\Delta x = 0{,}50\\) nm, quanto vale il prodotto \\(\\Delta x \\, \\Delta p\\) nel caso migliore possibile?",
+      opts: [
+        "\\(5{,}3\\cdot10^{-35}\\) J s, cioè esattamente \\(\\hbar/2\\)",
+        "Zero: nel caso ideale entrambe le indeterminazioni si annullano",
+        "\\(6{,}6\\cdot10^{-34}\\) J s, cioè \\(h\\)",
+        "Dipende dalla massa della particella considerata"
+      ], c: 0,
+      why: "Il minimo consentito è \\(\\hbar/2 = 5{,}3\\cdot10^{-35}\\) J·s, e non dipende né da \\(\\Delta x\\) né dalla particella: è il pacchetto gaussiano a raggiungerlo. Qualunque altro stato dà un prodotto maggiore.",
+      traps: {
+        1: "Un prodotto nullo violerebbe il principio: è precisamente lo stato che non esiste.",
+        2: "Il vincolo è \\(\\hbar/2 = h/4\\pi\\), circa dodici volte più piccolo di \\(h\\).",
+        3: "Il vincolo sul prodotto \\(\\Delta x \\Delta p\\) è universale. È l'indeterminazione sulla <em>velocità</em> a dipendere dalla massa, perché \\(\\Delta v = \\Delta p/m\\)."
+      }
+    }
+  ]
+};
+
+/* raccoglie da tutte le banche le domande di un modulo */
+function bancoModulo(id) {
+  const m = +id, t = [], p = [];
+  [Q_TEORIA, Q_SIM, Q_ESERC, Q_EXTRA].forEach(b => {
+    b.teoria.forEach(q => { if (q.m === m) t.push(q); });
+    b.problemi.forEach(q => { if (q.m === m) p.push(q); });
+  });
+  return { teoria: t, problemi: p };
+}
 
 const Q_FINALE = {
   teoria: [
@@ -3896,42 +5303,41 @@ const Q_FINALE = {
   applyTheme(saved || (prefersDark ? "dark" : "light"), false);
 
   buildEsercizi();
-  updateExCount();
 
-  makeQuiz("quiz-teoria", {
-    title: "Quiz della sezione 1 — Teoria",
-    mode: "immediate", teoria: Q_TEORIA.teoria, problemi: Q_TEORIA.problemi
+  /* un quiz per modulo, con riscontro immediato e spiegazione dell'errore */
+  MODULI.filter(m => m.id !== "fin").forEach(m => {
+    const bank = bancoModulo(m.id);
+    makeQuiz("quiz-m" + m.id, {
+      title: "Quiz del modulo " + m.id + " — " + m.nav,
+      mode: "immediate", teoria: bank.teoria, problemi: bank.problemi
+    });
+    const host = document.getElementById("quiz-m" + m.id);
+    const d = document.createElement("p");
+    d.innerHTML = "Verifica sui soli argomenti di questo modulo: <b>" + bank.teoria.length +
+      " domande di teoria</b> e <b>" + bank.problemi.length + " problemi</b>. " +
+      "Il riscontro è immediato e ogni risposta errata riceve la spiegazione dell'errore specifico. " +
+      "La posizione della risposta esatta è casuale e cambia a ogni tentativo.";
+    host.insertBefore(d, host.firstChild);
+    const c = document.querySelector('[data-qtot="' + m.id + '"]');
+    if (c) c.textContent = "(" + (bank.teoria.length + bank.problemi.length) + ")";
+    typeset(d);
   });
-  makeQuiz("quiz-sim", {
-    title: "Quiz della sezione 2 — Simulazioni",
-    mode: "immediate", teoria: Q_SIM.teoria, problemi: Q_SIM.problemi
-  });
-  makeQuiz("quiz-eserc", {
-    title: "Quiz della sezione 3 — Esercizi e metodo di calcolo",
-    mode: "immediate", teoria: Q_ESERC.teoria, problemi: Q_ESERC.problemi
-  });
+
   makeQuiz("quiz-finale", {
     title: "Verifica finale di riepilogo",
     mode: "final", teoria: Q_FINALE.teoria, problemi: Q_FINALE.problemi
   });
 
-  /* intestazioni dei quiz di sezione */
-  [["quiz-teoria", "Verifica sulla sezione 1: dieci domande di teoria e cinque problemi, tutti sugli argomenti trattati sopra. Il riscontro è immediato, con la spiegazione dell'errore."],
-   ["quiz-sim", "Verifica sulla sezione 2: dieci domande sul comportamento osservato nelle tre simulazioni e cinque problemi numerici collegati. Riscontro immediato."],
-   ["quiz-eserc", "Verifica sulla sezione 3: dieci domande sul metodo di risoluzione, le unità e gli errori tipici, più cinque problemi. Riscontro immediato."]
-  ].forEach(p => {
-    const host = document.getElementById(p[0]);
-    if (!host) return;
-    const h = document.createElement("h2");
-    h.textContent = "Quiz di sezione";
-    const d = document.createElement("p");
-    d.textContent = p[1];
-    host.insertBefore(d, host.firstChild);
-    host.insertBefore(h, host.firstChild);
-  });
+  /* collegamenti rapidi ai quiz dei moduli, nella verifica finale */
+  const ql = $("#quizlinks");
+  if (ql) ql.innerHTML = MODULI.filter(m => m.id !== "fin").map(m =>
+    '<button type="button" class="q" data-goto="' + m.id + '" data-pane-goto="quiz">Modulo ' +
+    m.id + " &middot; " + m.nav + " &rarr;</button>").join("");
 
-  const hash = (location.hash || "").replace("#", "");
-  showSection(SECTIONS.indexOf(hash) >= 0 ? hash : "teoria", false);
+  /* stato iniziale: dall'indirizzo se presente, altrimenti primo modulo */
+  const r = leggiHash();
+  if (r) { paneCorrente[r.mod] = r.pane; mostraModulo(r.mod, false); }
+  else mostraModulo("1", false);
   typeset();
 })();
 </script>
