@@ -212,6 +212,48 @@ html[data-theme="dark"] .subtabs button[aria-selected="true"] { color: #16121f; 
 @media (max-width: 560px) {
   .subtabs button { font-size: .8rem; padding: 7px 12px; flex: 1 1 auto; justify-content: center; }
 }
+/* ---- indice dei moduli, nell'introduzione ---- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(238px, 1fr)); gap: 12px; margin: 0 0 22px; }
+.cardm {
+  text-align: left; cursor: pointer; font-family: var(--ui);
+  background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--q);
+  border-radius: 12px; padding: 14px 16px; display: block; width: 100%;
+}
+.cardm:hover { border-color: var(--q); box-shadow: var(--shadow); transform: translateY(-1px); }
+.cardm .cn {
+  font-family: var(--mono); font-size: .68rem; letter-spacing: .09em; text-transform: uppercase;
+  color: var(--q); font-weight: 700;
+}
+.cardm .ct { display: block; font-weight: 700; font-size: 1.02rem; margin: 3px 0 5px; color: var(--ink); }
+.cardm .cd { display: block; color: var(--muted); font-size: .88rem; line-height: 1.5; }
+.cardm .cs {
+  display: block; margin-top: 9px; padding-top: 8px; border-top: 1px dashed var(--line);
+  color: var(--teal); font-size: .82rem; font-weight: 600;
+}
+
+/* ---- cronologia ---- */
+.tl { list-style: none; margin: 0 0 18px; padding: 0; }
+.tl li {
+  position: relative; padding: 0 0 16px 24px; margin: 0 0 0 104px;
+  border-left: 2px solid var(--line);
+}
+.tl li:last-child { border-left-color: transparent; padding-bottom: 0; }
+.tl li::before {
+  content: ""; position: absolute; left: -7px; top: 5px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--panel); border: 2.5px solid var(--q);
+}
+.tl li .yr {
+  position: absolute; left: -104px; top: 1px; width: 80px; text-align: right;
+  font-family: var(--mono); font-size: .82rem; font-weight: 700; color: var(--q);
+}
+.tl li b { color: var(--ink); }
+.tl li.key::before { background: var(--q); }
+@media (max-width: 700px) {
+  .tl li { padding-left: 16px; margin-left: 8px; }
+  .tl li .yr { position: static; display: block; width: auto; text-align: left; margin-bottom: 3px; }
+}
+
 /* elenco numerato di passaggi, per le derivazioni */
 .steps {
   background: var(--panel2); border: 1px solid var(--line);
@@ -464,7 +506,7 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
 <header>
   <div class="hd">
     <div class="brand">
-      <p class="kicker">Fisica moderna &middot; quinto anno</p>
+      <p class="kicker">Fisica moderna &middot; percorso interattivo</p>
       <h1>Introduzione alla fisica quantistica</h1>
       <p class="sub">Sei moduli, ciascuno con la propria teoria, la propria simulazione interattiva, i propri esercizi guidati e il proprio quiz. Dal corpo nero alla funzione d'onda: l'intuizione classica qui non basta, e questo fa parte del percorso.</p>
     </div>
@@ -482,7 +524,114 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
 
 <main class="wrap">
 
-<section class="module" id="mod-1" role="tabpanel" aria-labelledby="tab-mod-1">
+<section class="module" id="mod-intro" role="tabpanel" aria-labelledby="tab-mod-intro">
+  <div class="modhead">
+    <p class="modnum">Introduzione</p>
+    <h1 class="modtitle">Che cosa faremo, e perché è andata così</h1>
+    <p class="modsub">Il percorso in sei moduli, il modo di lavorare, e la storia dei ventisette anni in cui la fisica ha cambiato idea sulla materia e sulla luce.</p>
+  </div>
+
+  <h2>Il problema di partenza</h2>
+
+  <p>Nel 1894 il fisico americano Albert Michelson scriveva che le leggi fondamentali della fisica erano state tutte scoperte, e che al futuro restava il compito di misurare le costanti con più decimali. Non era una posizione stravagante: la meccanica di Newton reggeva da due secoli, l'elettromagnetismo di Maxwell aveva unificato luce, elettricità e magnetismo, la termodinamica funzionava. Sembrava un edificio finito.</p>
+
+  <p>Restavano però alcuni fenomeni marginali che nessuna di quelle teorie spiegava. Non spiegava male: <em>non spiegava affatto</em>. In tre casi la fisica classica, applicata correttamente, produceva un risultato palesemente assurdo — un'energia infinita, un atomo che collassa in un centomilionesimo di secondo, un urto che non dovrebbe avvenire. Quei tre casi non erano dettagli da sistemare: erano le crepe da cui, tra il 1900 e il 1927, è uscita una fisica nuova.</p>
+
+  <p>Questo percorso segue quelle crepe una per una. Non nell'ordine in cui è comodo enunciare le formule, ma nell'ordine in cui i fisici ci sono arrivati: prima l'esperimento che non torna, poi l'ipotesi che lo salva, poi il prezzo concettuale da pagare.</p>
+
+  <h2>I sei moduli</h2>
+
+  <div class="cards">
+    <button class="cardm" type="button" data-goto="1">
+      <span class="cn">Modulo 1</span>
+      <span class="ct">Corpo nero e ipotesi di Planck</span>
+      <span class="cd">Perché la fisica classica prevede che un forno emetta energia infinita, e come Planck evita l'assurdo supponendo che l'energia si scambi a pacchetti.</span>
+      <span class="cs">Simulazione: curve di Planck e catastrofe ultravioletta</span>
+    </button>
+    <button class="cardm" type="button" data-goto="2">
+      <span class="cn">Modulo 2</span>
+      <span class="ct">Effetto fotoelettrico</span>
+      <span class="cd">Tre fatti sperimentali che l'onda classica non può spiegare: la soglia in frequenza, l'istantaneità, la linearità dell'energia. La risposta di Einstein.</span>
+      <span class="cs">Simulazione: cella fotoelettrica con potenziale d'arresto</span>
+    </button>
+    <button class="cardm" type="button" data-goto="3">
+      <span class="cn">Modulo 3</span>
+      <span class="ct">Effetto Compton</span>
+      <span class="cd">Un fotone urta un elettrone e ne esce con lunghezza d'onda maggiore. Si misura la cinematica dell'urto, e i conti tornano solo dando al fotone una quantità di moto.</span>
+      <span class="cs">Simulazione: urto fotone-elettrone con rinculo</span>
+    </button>
+    <button class="cardm" type="button" data-goto="4">
+      <span class="cn">Modulo 4</span>
+      <span class="ct">Dualismo onda-particella</span>
+      <span class="cd">Se la luce ha proprietà corpuscolari, la materia può averne di ondulatorie. Gli elettroni interferiscono, uno alla volta, e la probabilità entra nella fisica.</span>
+      <span class="cs">Simulazione: doppia fenditura con elettroni singoli</span>
+    </button>
+    <button class="cardm" type="button" data-goto="5">
+      <span class="cn">Modulo 5</span>
+      <span class="ct">Modelli atomici e atomo di Bohr</span>
+      <span class="cd">L'atomo classico non può esistere: irradierebbe e collasserebbe. Gli spettri a righe indicano la strada, Bohr la imbocca quantizzando le orbite.</span>
+      <span class="cs">Simulazione: livelli, transizioni e spettro dell'idrogeno</span>
+    </button>
+    <button class="cardm" type="button" data-goto="6">
+      <span class="cn">Modulo 6</span>
+      <span class="ct">Indeterminazione e funzione d'onda</span>
+      <span class="cd">Posizione e quantità di moto non possono essere entrambe definite. Non per limiti degli strumenti: perché la particella non le possiede entrambe.</span>
+      <span class="cs">Simulazione: pacchetto d'onda e quantità di moto</span>
+    </button>
+  </div>
+
+  <div class="callout">
+    <span class="lab">Come funziona ogni modulo</span>
+    <p>Dentro ciascun modulo trovi quattro schede, pensate per essere usate in quest'ordine.</p>
+    <ul style="margin-bottom:0">
+      <li><b>Teoria</b> — il fenomeno, il conflitto con la fisica classica, l'ipotesi che lo risolve. Con i diagrammi e i passaggi espliciti, non solo il risultato.</li>
+      <li><b>Simulazione</b> — le stesse grandezze, ma manovrabili. Ogni simulazione ha un riquadro "che cosa osservare" con tre o quattro esperimenti mirati: fanne almeno uno, perché alcune conclusioni si capiscono solo vedendole cambiare.</li>
+      <li><b>Esercizi</b> — problemi con verifica del risultato, aiuti progressivi che non rivelano la risposta e svolgimento completo. Quando sbagli, il riscontro prova a diagnosticare <em>dove</em> si è rotto il conto: unità confuse, un fattore 2, \(n\) al posto di \(n^2\).</li>
+      <li><b>Quiz del modulo</b> — domande di teoria e problemi a risposta multipla con riscontro immediato. Ogni opzione sbagliata ha la sua spiegazione: se la scegli, ti viene detto quale ragionamento errato porta lì.</li>
+    </ul>
+  </div>
+
+  <p>Alla fine del percorso c'è una <b>verifica di riepilogo</b> su tutto il programma, con punteggio calcolato alla consegna: dieci domande di teoria e cinque problemi, senza riscontro intermedio.</p>
+
+  <h2>Ventisette anni, in ordine</h2>
+
+  <p>Vale la pena tenere presente la cronologia, perché smonta due impressioni sbagliate: che la fisica quantistica sia nata già formata, e che i suoi autori l'abbiano accettata volentieri. Nessuna delle due è vera.</p>
+
+  <ul class="tl">
+    <li class="key"><span class="yr">1900</span><b>Planck e il quanto d'azione.</b> Il 14 dicembre, a Berlino, Max Planck presenta alla Società Fisica Tedesca una derivazione della legge del corpo nero che richiede di supporre gli scambi di energia discreti, in multipli di \(hf\). Planck considera l'ipotesi un artificio matematico e passa anni a cercare di eliminarla; molto più tardi la definirà «un atto di disperazione». È la data di nascita convenzionale della fisica quantistica, e il suo autore non ne era convinto.</li>
+    <li class="key"><span class="yr">1905</span><b>Einstein prende i quanti sul serio.</b> Nell'anno in cui pubblica anche la relatività speciale, Einstein propone che la luce <em>sia</em> fatta di quanti, non che si scambi soltanto per quanti, e spiega con questo l'effetto fotoelettrico. È il passo che Planck non voleva fare. Per oltre un decennio l'ipotesi resta minoritaria: nel 1913, raccomandando Einstein per l'Accademia Prussiana, Planck chiede di non tenergli conto di quella «svista» sui quanti di luce.</li>
+    <li><span class="yr">1909-11</span><b>Rutherford svuota l'atomo.</b> Gli esperimenti di Geiger e Marsden sulla deflessione delle particelle alfa mostrano che la carica positiva è concentrata in un nucleo minuscolo. Rutherford ne ricava il modello planetario, che ha però un difetto fatale: secondo l'elettromagnetismo classico un elettrone in orbita irradia e cade sul nucleo in una frazione infinitesima di secondo.</li>
+    <li class="key"><span class="yr">1913</span><b>Bohr quantizza l'atomo.</b> Niels Bohr postula orbite stabili e transizioni con emissione di un fotone di energia \(hf = E_i - E_f\). Il modello prevede con precisione le righe dell'idrogeno, ma è un ibrido: meccanica classica più regole quantistiche imposte a mano, valide senza una giustificazione.</li>
+    <li><span class="yr">1914-16</span><b>Millikan misura, controvoglia.</b> Robert Millikan verifica sperimentalmente la relazione di Einstein sul fotoelettrico con grande accuratezza, ricavandone un valore preciso di \(h\). Aveva iniziato l'esperimento convinto di poter smentire l'ipotesi dei quanti di luce, e lo scrive.</li>
+    <li><span class="yr">1922</span><b>Il Nobel dell'ambiguità.</b> A Einstein viene assegnato il premio Nobel per il 1921, con motivazione «per la scoperta della legge dell'effetto fotoelettrico»: non per la relatività, ancora considerata troppo controversa. La citazione premia la legge, evitando di pronunciarsi sui quanti di luce.</li>
+    <li class="key"><span class="yr">1923</span><b>Compton chiude la questione.</b> Arthur Compton misura la lunghezza d'onda dei raggi X diffusi e trova lo spostamento previsto trattando il processo come un urto fra due particelle. Dopo Compton, la quantità di moto del fotone non è più discutibile.</li>
+    <li class="key"><span class="yr">1924</span><b>de Broglie ribalta l'argomento.</b> Nella sua tesi di dottorato Louis de Broglie propone che anche la materia abbia proprietà ondulatorie, con \(\lambda = h/p\). L'idea è così inconsueta che il relatore chiede un parere a Einstein prima di accettarla.</li>
+    <li><span class="yr">1925</span><b>La prima meccanica quantistica.</b> A giugno, sull'isola di Helgoland dove si è ritirato per una crisi di raffreddore da fieno, Werner Heisenberg costruisce una teoria basata solo su grandezze osservabili. Con Born e Jordan diventa la meccanica delle matrici: astratta, senza immagini, e per questo accolta con diffidenza.</li>
+    <li class="key"><span class="yr">1926</span><b>Schrödinger e Born.</b> A gennaio Erwin Schrödinger pubblica un'equazione d'onda per la materia, matematicamente equivalente alla teoria di Heisenberg ma molto più maneggevole: i livelli energetici non sono più postulati, escono come soluzioni. A giugno Max Born aggiunge l'interpretazione decisiva: \(|\psi|^2\) è una densità di probabilità. Schrödinger non accetterà mai del tutto questa lettura della propria equazione.</li>
+    <li class="key"><span class="yr">1927</span><b>Indeterminazione, e la conferma del dualismo.</b> A marzo Heisenberg pubblica il principio di indeterminazione. Nello stesso anno Davisson e Germer osservano la diffrazione degli elettroni, confermando de Broglie. A ottobre, al quinto congresso Solvay di Bruxelles, inizia il confronto pubblico fra Einstein e Bohr sul significato della teoria: Einstein non contesta i conti, contesta che la descrizione probabilistica sia definitiva. Il dibattito durerà decenni.</li>
+    <li><span class="yr">1932-33</span><b>I premi arrivano dopo.</b> Il Nobel va a Heisenberg (1932) e a Schrödinger e Dirac (1933). Nel giro di un decennio la teoria che nessuno voleva è diventata lo strumento standard della fisica.</li>
+    <li><span class="yr">1976-89</span><b>L'esperimento pensato diventa reale.</b> La doppia fenditura con elettroni inviati <em>uno alla volta</em>, per decenni solo un esperimento mentale, viene realizzata a Bologna dal gruppo di Merli, Missiroli e Pozzi e poi, con immagini rimaste celebri, da Tonomura e collaboratori. La figura di interferenza si forma un punto dopo l'altro, esattamente come previsto. È la simulazione del modulo 4.</li>
+  </ul>
+
+  <div class="callout amber">
+    <span class="lab">Una raccomandazione sul metodo</span>
+    <p>Molte affermazioni di questo percorso sembreranno sbagliate alla prima lettura. Non perché siano spiegate male, ma perché l'intuizione che abbiamo costruito su oggetti grandi — palle, onde sull'acqua, pianeti — non si estende alla scala atomica. Il disagio è la reazione corretta, ed è la stessa che hanno provato Planck, Millikan, Schrödinger ed Einstein, ciascuno a modo suo.</p>
+    <p style="margin-bottom:0">Il modo di superarlo non è «immaginarlo meglio»: è seguire gli esperimenti e accettare che la descrizione giusta sia quella che li riproduce. Quando una simulazione contraddice quello che ti aspettavi, quella è la parte utile: fermati lì e chiediti quale assunzione classica stavi usando.</p>
+  </div>
+
+  <div class="callout teal">
+    <span class="lab">Prerequisiti e convenzioni</span>
+    <p>Serve saper usare energia cinetica e potenziale, la relazione fra frequenza e lunghezza d'onda \(c = \lambda f\), la conservazione di energia e quantità di moto, e le potenze di dieci. Non serve il calcolo differenziale: dove una derivata sarebbe naturale, il passaggio è enunciato e discusso a parole.</p>
+    <p style="margin-bottom:0">Le energie atomiche si esprimono in <b>elettronvolt</b> (\(1\ \mathrm{eV} = 1{,}602\cdot10^{-19}\) J) e le lunghezze d'onda in nanometri o picometri. Torna utilissima la combinazione \(hc = 1240\ \mathrm{eV\,nm}\), che dà l'energia di un fotone in eV dividendo semplicemente per la lunghezza d'onda in nm. I valori delle costanti usate sono in fondo alla pagina.</p>
+  </div>
+
+  <div class="btnrow" style="margin-bottom:0">
+    <button class="act" type="button" data-goto="1">Comincia dal modulo 1 &rarr;</button>
+    <button class="ghost" type="button" data-goto="fin">Vai alla verifica finale</button>
+  </div>
+</section>
+
+<section class="module" id="mod-1" role="tabpanel" aria-labelledby="tab-mod-1" hidden>
   <div class="modhead">
     <p class="modnum">Modulo 1 di 6</p>
     <h1 class="modtitle">Corpo nero e ipotesi di Planck</h1>
@@ -495,7 +644,6 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
   <div class="callout">
     <span class="lab">Come leggere questa sezione</span>
     <p>Stiamo entrando in una scala — quella atomica — dove le regole cambiano. Molte affermazioni che seguono sembreranno sbagliate alla prima lettura: non perché siano spiegate male, ma perché l'intuizione che abbiamo costruito su oggetti grandi (palle, onde sull'acqua, pianeti) non si estende fino qui. Il disagio che senti è la reazione corretta, ed è la stessa che hanno provato i fisici tra il 1900 e il 1927. Il metodo per superarlo non è "immaginarlo meglio": è seguire gli esperimenti, e accettare che la descrizione giusta sia quella che li riproduce.</p>
-    <p style="margin-bottom:0">Il percorso è diviso in <b>sei moduli</b>, che si scelgono dalla barra in alto. Dentro ogni modulo le quattro schede vanno lette nell'ordine: la <b>teoria</b> introduce il fenomeno, la <b>simulazione</b> ti fa manovrare le grandezze in gioco, gli <b>esercizi</b> ti fanno usare le formule con aiuti progressivi, il <b>quiz</b> verifica la comprensione con riscontro immediato. Alla fine c'è una verifica di riepilogo su tutto il programma.</p>
   </div>
   <h2 id="t1">1. La crisi della fisica classica</h2>
 
@@ -1407,7 +1555,7 @@ mjx-container[display="true"] { margin: 14px 0 !important; }
 
 <footer>
   <div class="fw">
-    <p><b>Fisica moderna — introduzione alla fisica quantistica.</b> Materiale didattico per il quinto anno di liceo scientifico. Costanti usate: \(h = 6{,}626\cdot10^{-34}\,\mathrm{J\,s} = 4{,}136\cdot10^{-15}\,\mathrm{eV\,s}\); \(hc = 1240\ \mathrm{eV\,nm}\); \(c = 3{,}00\cdot10^{8}\,\mathrm{m/s}\); \(m_e = 9{,}11\cdot10^{-31}\,\mathrm{kg}\); \(1\ \mathrm{eV} = 1{,}602\cdot10^{-19}\,\mathrm{J}\).</p>
+    <p><b>Fisica moderna — introduzione alla fisica quantistica.</b> Materiale didattico. Costanti usate: \(h = 6{,}626\cdot10^{-34}\,\mathrm{J\,s} = 4{,}136\cdot10^{-15}\,\mathrm{eV\,s}\); \(hc = 1240\ \mathrm{eV\,nm}\); \(c = 3{,}00\cdot10^{8}\,\mathrm{m/s}\); \(m_e = 9{,}11\cdot10^{-31}\,\mathrm{kg}\); \(1\ \mathrm{eV} = 1{,}602\cdot10^{-19}\,\mathrm{J}\).</p>
     <p>Le simulazioni sono qualitativamente fedeli ma usano scale spaziali e temporali compresse per essere leggibili: dove la scala non è realistica, è indicato nel pannello. I colori delle righe spettrali dell'idrogeno sono l'unica eccezione voluta alla palette dell'app, per fedeltà fisica.</p>
   </div>
 </footer>
@@ -1562,6 +1710,7 @@ themeBtn.addEventListener("click", (ev) => {
    la barra dei moduli scorre con la pagina.
    ============================================================ */
 const MODULI = [
+  { id: "intro", kick: "Inizio", nav: "Introduzione", sotto: "il percorso e la sua storia" },
   { id: "1",   nav: "Corpo nero e Planck",   sotto: "crisi della fisica classica" },
   { id: "2",   nav: "Effetto fotoelettrico", sotto: "i quanti di luce" },
   { id: "3",   nav: "Effetto Compton",       sotto: "quantità di moto del fotone" },
@@ -1575,7 +1724,7 @@ const PANE = [
 ];
 const MODID = MODULI.map(m => m.id);
 
-let modCorrente = "1";
+let modCorrente = "intro";
 const paneCorrente = {};                 // ultima scheda visitata per ogni modulo
 MODID.forEach(id => paneCorrente[id] = "teoria");
 
@@ -1583,7 +1732,7 @@ MODID.forEach(id => paneCorrente[id] = "teoria");
 $("#modnav").innerHTML = MODULI.map((m, i) =>
   '<button class="navbtn" role="tab" type="button" id="tab-mod-' + m.id + '" aria-controls="mod-' + m.id + '"' +
   ' aria-selected="' + (i === 0 ? "true" : "false") + '" data-mod="' + m.id + '">' +
-  '<span class="mn">' + (m.id === "fin" ? "Verifica" : "Modulo " + m.id) + '</span>' +
+  '<span class="mn">' + (m.kick || (m.id === "fin" ? "Verifica" : "Modulo " + m.id)) + '</span>' +
   "<b>" + m.nav + "</b><span>" + m.sotto + "</span></button>").join("");
 
 $("#modnav").addEventListener("click", e => {
@@ -1637,12 +1786,14 @@ function mostraPane(mod, pane, scroll) {
   paneMostrato(mod, pane);
 }
 
-/* la scheda "Verifica finale" non ha schede interne */
-function paneAttivo() { return modCorrente === "fin" ? "quiz" : (paneCorrente[modCorrente] || "teoria"); }
+/* introduzione e verifica finale sono sezioni singole, senza schede interne */
+function haPane(id) { return !!document.querySelector('.subtabs[data-mod="' + id + '"]'); }
+function isModulo(id) { return /^[1-9]$/.test(id); }
+function paneAttivo() { return haPane(modCorrente) ? (paneCorrente[modCorrente] || "teoria") : "nessuna"; }
 
 function aggiornaHash() {
   if (!history.replaceState) return;
-  const p = modCorrente === "fin" ? "" : "/" + (paneCorrente[modCorrente] || "teoria");
+  const p = haPane(modCorrente) ? "/" + (paneCorrente[modCorrente] || "teoria") : "";
   history.replaceState(null, "", "#m" + modCorrente + p);
 }
 
@@ -1654,6 +1805,15 @@ function leggiHash() {
   const pane = PANE.some(p => p[0] === parts[1]) ? parts[1] : "teoria";
   return { mod: mod, pane: pane };
 }
+
+/* indirizzo cambiato a pagina gia' aperta (link condiviso, tasto indietro) */
+window.addEventListener("hashchange", () => {
+  const r = leggiHash();
+  if (!r) return;
+  if (r.mod === modCorrente && (!haPane(r.mod) || r.pane === paneCorrente[r.mod])) return;
+  paneCorrente[r.mod] = r.pane;
+  mostraModulo(r.mod, false);
+});
 
 /* scorrimento a un elemento per id */
 function scrollToId(id) {
@@ -5305,7 +5465,7 @@ const Q_FINALE = {
   buildEsercizi();
 
   /* un quiz per modulo, con riscontro immediato e spiegazione dell'errore */
-  MODULI.filter(m => m.id !== "fin").forEach(m => {
+  MODULI.filter(m => isModulo(m.id)).forEach(m => {
     const bank = bancoModulo(m.id);
     makeQuiz("quiz-m" + m.id, {
       title: "Quiz del modulo " + m.id + " — " + m.nav,
@@ -5330,14 +5490,14 @@ const Q_FINALE = {
 
   /* collegamenti rapidi ai quiz dei moduli, nella verifica finale */
   const ql = $("#quizlinks");
-  if (ql) ql.innerHTML = MODULI.filter(m => m.id !== "fin").map(m =>
+  if (ql) ql.innerHTML = MODULI.filter(m => isModulo(m.id)).map(m =>
     '<button type="button" class="q" data-goto="' + m.id + '" data-pane-goto="quiz">Modulo ' +
     m.id + " &middot; " + m.nav + " &rarr;</button>").join("");
 
   /* stato iniziale: dall'indirizzo se presente, altrimenti primo modulo */
   const r = leggiHash();
   if (r) { paneCorrente[r.mod] = r.pane; mostraModulo(r.mod, false); }
-  else mostraModulo("1", false);
+  else mostraModulo("intro", false);
   typeset();
 })();
 </script>

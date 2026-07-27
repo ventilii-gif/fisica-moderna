@@ -1,6 +1,6 @@
 # Fisica moderna — introduzione alla fisica quantistica
 
-Web app didattica interattiva in italiano per il quinto anno di liceo scientifico.
+Web app didattica interattiva in italiano sulla fisica quantistica.
 Tutto in un unico file: [`index.html`](index.html).
 
 ## Come aprirla
